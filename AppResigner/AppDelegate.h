@@ -10,6 +10,7 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
+- (void)populateCertPopDown:(NSArray *)certModels;
 //Properties
 @property (nonatomic, strong) NSURL *outputPathURL;
 
@@ -19,5 +20,7 @@
 //Interface builder properties
 @property (assign) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSTextField *pathTextField;
+@property (weak) IBOutlet NSPopUpButton *certPopDownBtn;
+@property (weak) IBOutlet NSScrollView *statusTextView;
 
 @end

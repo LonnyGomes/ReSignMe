@@ -7,6 +7,7 @@
 //
 
 #import "AppDelegate.h"
+#import "CertificateModel.h"
 #import "SecurityManager.h"
 
 @interface AppDelegate()
@@ -18,13 +19,20 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.sm = [SecurityManager defaultManager];
-    [self.sm getDistributionCertificatesList];
+    [self populateCertPopDown:[self.sm getDistributionCertificatesList]];
 }
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {
     _outputPathURL = outputPathURL;
     [self.pathTextField setStringValue:outputPathURL.path];
 }
+
+- (void)populateCertPopDown:(NSArray *)certModels {
+    for (CertificateModel *curModel in certModels) {
+        [self.certPopDownBtn addItemWithTitle:curModel.label];
+    }
+}
+
 
 #pragma mark - IB Actions
 - (IBAction)browseBtnPressed:(id)sender {
