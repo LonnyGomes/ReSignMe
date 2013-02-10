@@ -7,12 +7,17 @@
 //
 
 #import "AppDelegate.h"
+#import "SecurityManager.h"
 
+@interface AppDelegate()
+@property (nonatomic, strong) SecurityManager *sm;
+
+@end
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    // Insert code here to initialize your application
+    self.sm = [SecurityManager defaultManager];
 }
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {

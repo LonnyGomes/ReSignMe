@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
+		07E0CB9216C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
+		07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
 		07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
 		07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A116C7271A00AC4D31 /* InfoPlist.strings */; };
 		07FE86A516C7271A00AC4D31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86A416C7271A00AC4D31 /* main.m */; };
@@ -30,6 +33,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecurityManager.h; sourceTree = "<group>"; };
+		07E0CB9016C73E8F005E6C6A /* SecurityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecurityManager.m; sourceTree = "<group>"; };
+		07E0CB9316C73FEA005E6C6A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppResigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -56,6 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */,
 				07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -75,6 +82,7 @@
 		07FE868C16C7271A00AC4D31 = {
 			isa = PBXGroup;
 			children = (
+				07E0CB9316C73FEA005E6C6A /* Security.framework */,
 				07FE869E16C7271A00AC4D31 /* AppResigner */,
 				07FE86BB16C7271A00AC4D31 /* AppResignerTests */,
 				07FE869716C7271A00AC4D31 /* Frameworks */,
@@ -118,6 +126,8 @@
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
 				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,
 				07FE869F16C7271A00AC4D31 /* Supporting Files */,
+				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
+				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
 			);
 			path = AppResigner;
 			sourceTree = "<group>";
@@ -263,6 +273,7 @@
 			files = (
 				07FE86A516C7271A00AC4D31 /* main.m in Sources */,
 				07FE86AC16C7271A00AC4D31 /* AppDelegate.m in Sources */,
+				07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -271,6 +282,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				07FE86C316C7271A00AC4D31 /* AppResignerTests.m in Sources */,
+				07E0CB9216C73E8F005E6C6A /* SecurityManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -452,6 +464,7 @@
 				07FE86C816C7271A00AC4D31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResignerTests" */ = {
 			isa = XCConfigurationList;
@@ -460,6 +473,7 @@
 				07FE86CB16C7271A00AC4D31 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
