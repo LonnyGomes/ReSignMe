@@ -10,6 +10,14 @@
 
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
+//Properties
+@property (nonatomic, strong) NSURL *outputPathURL;
+
+//Interface builder actions
+- (IBAction)browseBtnPressed:(id)sender;
+
+//Interface builder properties
 @property (assign) IBOutlet NSWindow *window;
+@property (weak) IBOutlet NSTextField *pathTextField;
 
 @end

@@ -24,8 +24,9 @@
     [super tearDown];
 }
 
-- (void)testExample
+- (void)testTest
 {
+    
     STFail(@"Unit tests are not implemented yet in AppResignerTests");
 }
 

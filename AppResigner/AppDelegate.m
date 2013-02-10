@@ -15,4 +15,22 @@
     // Insert code here to initialize your application
 }
 
+- (void)setOutputPathURL:(NSURL *)outputPathURL {
+    _outputPathURL = outputPathURL;
+    [self.pathTextField setStringValue:outputPathURL.absoluteString];
+}
+
+#pragma mark - IB Actions
+- (IBAction)browseBtnPressed:(id)sender {
+    NSOpenPanel* openDlg = [NSOpenPanel openPanel];
+    
+    openDlg.canChooseDirectories = YES;
+    openDlg.canChooseFiles = NO;
+    openDlg.canCreateDirectories = YES;
+    openDlg.allowsMultipleSelection = NO;
+    
+    if ( [openDlg runModal] == NSOKButton ) {
+        self.outputPathURL = openDlg.URL;
+    }
+}
 @end
