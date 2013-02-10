@@ -17,7 +17,7 @@
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {
     _outputPathURL = outputPathURL;
-    [self.pathTextField setStringValue:outputPathURL.absoluteString];
+    [self.pathTextField setStringValue:outputPathURL.path];
 }
 
 #pragma mark - IB Actions

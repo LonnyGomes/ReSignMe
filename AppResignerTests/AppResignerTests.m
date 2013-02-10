@@ -7,14 +7,16 @@
 //
 
 #import "AppResignerTests.h"
+#import "AppDelegate.h"
 
 @implementation AppResignerTests
+AppDelegate *appDelegate;
 
 - (void)setUp
 {
     [super setUp];
     
-    // Set-up code here.
+    appDelegate = (AppDelegate *)[NSApp delegate];
 }
 
 - (void)tearDown
@@ -24,10 +26,14 @@
     [super tearDown];
 }
 
-- (void)testTest
+- (void)testOutputPathURL
 {
+    NSURL *myPathURL = [NSURL URLWithString:@"/usr/bin"];
+    [appDelegate setOutputPathURL:myPathURL];
     
-    STFail(@"Unit tests are not implemented yet in AppResignerTests");
+    NSString *myPath = [myPathURL path];
+    NSString *returnedPath = appDelegate.pathTextField.stringValue;
+    STAssertEqualObjects(myPath, returnedPath, @"The path set with NSURL should equal the path in the text field!");
 }
 
 @end
