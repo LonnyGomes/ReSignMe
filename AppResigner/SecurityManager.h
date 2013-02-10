@@ -13,4 +13,5 @@
 @interface SecurityManager : NSObject
 + (SecurityManager *) defaultManager;
 - (NSArray *)getDistributionCertificatesList;
+- (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL;
 @end

@@ -10,6 +10,16 @@
 #import "CertificateModel.h"
 #import <Security/Security.h>
 
+#define kCmdCodeSign @"/usr/bin/codesign"
+#define kCmdZip @"/usr/bin/zip"
+#define kCmdUnzip @"/usr/bin/unzip"
+#define kCmdMkTemp @"/usr/bin/mktemp"
+#define kCmdCp @"/bin/cp"
+#define kCmdRm @"/bin/rm"
+
+#define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
+#define kSecurityManagerWorkingSubDir @"dump"
+
 @implementation SecurityManager
 static SecurityManager *_certManager = nil;
 + (SecurityManager *) defaultManager {
@@ -28,6 +38,7 @@ static SecurityManager *_certManager = nil;
     }
     return self;
 }
+
 - (NSArray *)getDistributionCertificatesList {
     NSMutableArray *certList = [NSMutableArray array];
     CFTypeRef searchResultsRef;
@@ -78,4 +89,57 @@ static SecurityManager *_certManager = nil;
     
     return [NSArray arrayWithArray:certList];
 }
+
+- (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
+    NSFileHandle *file;
+    NSPipe *pipe = [NSPipe pipe];
+    
+    //create temp folder to perform work
+    NSTask *mktmpTask = [[NSTask alloc] init];
+    [mktmpTask setLaunchPath:kCmdMkTemp];
+    [mktmpTask setArguments:@[@"-d", kSecurityManagerTmpFileTemplate]];
+
+    [mktmpTask setStandardOutput:pipe];
+    file = [pipe fileHandleForReading];
+    
+    [mktmpTask launch];
+    [mktmpTask waitUntilExit];
+    
+    NSString *tmpPath = [[[NSString alloc] initWithData: [file readDataToEndOfFile] encoding: NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\n"  withString:@""];
+    NSURL *tmpPathURL = [NSURL URLWithString:tmpPath];
+    //copy the ipa over to the temp folder
+    NSTask *cpAppTask = [[NSTask alloc] init];
+    [cpAppTask setLaunchPath:kCmdCp];
+    NSString *cleanAppPath = [NSString stringWithFormat:@"%@", [appPathURL path]];
+    NSString *cleanTmpPath = [NSString stringWithFormat:@"%@", [tmpPathURL path]];
+    [cpAppTask setArguments:@[cleanAppPath, cleanTmpPath]];
+    
+    [cpAppTask launch];
+    [cpAppTask waitUntilExit];
+    
+    //NSLog (@"%@ %@ %@",kCmdCp,cleanAppPath, cleanTmpPath  );
+    int status;
+    if ( (status = [cpAppTask terminationStatus]) != 0) {
+        //TODO:HANDLE BETTER
+        NSLog(@"Could not copy ipa over!");
+        return;
+    }
+    
+    //set location of the copied IPA so we can unzip it
+    NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:[appPathURL lastPathComponent]];
+    NSURL *tempIpaDstPath = [tmpPathURL URLByAppendingPathComponent:kSecurityManagerWorkingSubDir];
+    
+    //now unzip the contents of the ipa to prepare for resigning
+    NSTask *unzipTask = [[NSTask alloc] init];
+    [unzipTask setLaunchPath:kCmdUnzip];
+    [unzipTask setArguments:@[[tempIpaSrcPath path], @"-d", [tempIpaDstPath path]]];
+    [unzipTask launch];
+    [unzipTask waitUntilExit];
+    
+    
+    //NSTask *codeSignTask = [[NSTask alloc] init];
+    
+    
+}
+
 @end

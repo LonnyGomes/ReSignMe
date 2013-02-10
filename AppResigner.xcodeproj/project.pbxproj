@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		07A1C23F16C7DF2200CEA565 /* AppDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1C23E16C7DF2200CEA565 /* AppDropView.m */; };
 		07A1C24016C7DF2200CEA565 /* AppDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1C23E16C7DF2200CEA565 /* AppDropView.m */; };
+		07B0951416C7FF4900772E86 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
 		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9216C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
@@ -79,6 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				07B0951416C7FF4900772E86 /* Security.framework in Frameworks */,
 				07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */,
 				07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
 			);

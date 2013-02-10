@@ -7,7 +7,9 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#import "AppDropView.h"
 
+#define kAppResignerDefaultOutputURL [NSURL URLWithString:@"~/Desktop"]
 @interface AppDelegate : NSObject <NSApplicationDelegate>
 
 - (void)populateCertPopDown:(NSArray *)certModels;
@@ -16,11 +18,13 @@
 
 //Interface builder actions
 - (IBAction)browseBtnPressed:(id)sender;
+- (IBAction)reSignBtnPressed:(id)sender;
 
 //Interface builder properties
 @property (assign) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSTextField *pathTextField;
 @property (weak) IBOutlet NSPopUpButton *certPopDownBtn;
 @property (weak) IBOutlet NSScrollView *statusTextView;
+@property (weak) IBOutlet AppDropView *dropView;
 
 @end

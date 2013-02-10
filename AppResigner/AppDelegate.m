@@ -20,6 +20,7 @@
 {
     self.sm = [SecurityManager defaultManager];
     [self populateCertPopDown:[self.sm getDistributionCertificatesList]];
+    self.outputPathURL = kAppResignerDefaultOutputURL;
 }
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {
@@ -29,6 +30,7 @@
 
 - (void)populateCertPopDown:(NSArray *)certModels {
     for (CertificateModel *curModel in certModels) {
+        [self.certPopDownBtn removeAllItems];
         [self.certPopDownBtn addItemWithTitle:curModel.label];
     }
 }
@@ -45,6 +47,18 @@
     
     if ( [openDlg runModal] == NSOKButton ) {
         self.outputPathURL = openDlg.URL;
+    }
+}
+
+- (IBAction)reSignBtnPressed:(id)sender {
+    if (self.dropView.selectedIPA && self.pathTextField.stringValue) {
+        NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
+        NSURL *appURL = [NSURL URLWithString:self.dropView.selectedIPA];
+        NSURL *outputURL = [NSURL URLWithString:self.pathTextField.stringValue];
+        [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
+    } else {
+        //TODO: handle errors more legantly
+        NSLog(@"Not all fields are defined");
     }
 }
 @end
