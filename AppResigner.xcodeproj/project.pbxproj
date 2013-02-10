@@ -1,0 +1,467 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
+		07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A116C7271A00AC4D31 /* InfoPlist.strings */; };
+		07FE86A516C7271A00AC4D31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86A416C7271A00AC4D31 /* main.m */; };
+		07FE86A916C7271A00AC4D31 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A716C7271A00AC4D31 /* Credits.rtf */; };
+		07FE86AC16C7271A00AC4D31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86AB16C7271A00AC4D31 /* AppDelegate.m */; };
+		07FE86AF16C7271A00AC4D31 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86AD16C7271A00AC4D31 /* MainMenu.xib */; };
+		07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */; };
+		07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
+		07FE86C016C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86BE16C7271A00AC4D31 /* InfoPlist.strings */; };
+		07FE86C316C7271A00AC4D31 /* AppResignerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86C216C7271A00AC4D31 /* AppResignerTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		07FE86B916C7271A00AC4D31 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 07FE868D16C7271A00AC4D31 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 07FE869416C7271A00AC4D31;
+			remoteInfo = AppResigner;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppResigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		07FE869C16C7271A00AC4D31 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		07FE869D16C7271A00AC4D31 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		07FE86A016C7271A00AC4D31 /* AppResigner-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppResigner-Info.plist"; sourceTree = "<group>"; };
+		07FE86A216C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		07FE86A416C7271A00AC4D31 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		07FE86A616C7271A00AC4D31 /* AppResigner-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "AppResigner-Prefix.pch"; sourceTree = "<group>"; };
+		07FE86A816C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		07FE86AA16C7271A00AC4D31 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		07FE86AB16C7271A00AC4D31 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		07FE86AE16C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		07FE86B516C7271A00AC4D31 /* AppResignerTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AppResignerTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		07FE86BD16C7271A00AC4D31 /* AppResignerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppResignerTests-Info.plist"; sourceTree = "<group>"; };
+		07FE86BF16C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		07FE86C116C7271A00AC4D31 /* AppResignerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppResignerTests.h; sourceTree = "<group>"; };
+		07FE86C216C7271A00AC4D31 /* AppResignerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppResignerTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		07FE869216C7271A00AC4D31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FE86B116C7271A00AC4D31 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */,
+				07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		07FE868C16C7271A00AC4D31 = {
+			isa = PBXGroup;
+			children = (
+				07FE869E16C7271A00AC4D31 /* AppResigner */,
+				07FE86BB16C7271A00AC4D31 /* AppResignerTests */,
+				07FE869716C7271A00AC4D31 /* Frameworks */,
+				07FE869616C7271A00AC4D31 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		07FE869616C7271A00AC4D31 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				07FE869516C7271A00AC4D31 /* AppResigner.app */,
+				07FE86B516C7271A00AC4D31 /* AppResignerTests.octest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		07FE869716C7271A00AC4D31 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07FE869816C7271A00AC4D31 /* Cocoa.framework */,
+				07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */,
+				07FE869A16C7271A00AC4D31 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		07FE869A16C7271A00AC4D31 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				07FE869B16C7271A00AC4D31 /* AppKit.framework */,
+				07FE869C16C7271A00AC4D31 /* CoreData.framework */,
+				07FE869D16C7271A00AC4D31 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		07FE869E16C7271A00AC4D31 /* AppResigner */ = {
+			isa = PBXGroup;
+			children = (
+				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
+				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
+				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,
+				07FE869F16C7271A00AC4D31 /* Supporting Files */,
+			);
+			path = AppResigner;
+			sourceTree = "<group>";
+		};
+		07FE869F16C7271A00AC4D31 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				07FE86A016C7271A00AC4D31 /* AppResigner-Info.plist */,
+				07FE86A116C7271A00AC4D31 /* InfoPlist.strings */,
+				07FE86A416C7271A00AC4D31 /* main.m */,
+				07FE86A616C7271A00AC4D31 /* AppResigner-Prefix.pch */,
+				07FE86A716C7271A00AC4D31 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		07FE86BB16C7271A00AC4D31 /* AppResignerTests */ = {
+			isa = PBXGroup;
+			children = (
+				07FE86C116C7271A00AC4D31 /* AppResignerTests.h */,
+				07FE86C216C7271A00AC4D31 /* AppResignerTests.m */,
+				07FE86BC16C7271A00AC4D31 /* Supporting Files */,
+			);
+			path = AppResignerTests;
+			sourceTree = "<group>";
+		};
+		07FE86BC16C7271A00AC4D31 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				07FE86BD16C7271A00AC4D31 /* AppResignerTests-Info.plist */,
+				07FE86BE16C7271A00AC4D31 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		07FE869416C7271A00AC4D31 /* AppResigner */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResigner" */;
+			buildPhases = (
+				07FE869116C7271A00AC4D31 /* Sources */,
+				07FE869216C7271A00AC4D31 /* Frameworks */,
+				07FE869316C7271A00AC4D31 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = AppResigner;
+			productName = AppResigner;
+			productReference = 07FE869516C7271A00AC4D31 /* AppResigner.app */;
+			productType = "com.apple.product-type.application";
+		};
+		07FE86B416C7271A00AC4D31 /* AppResignerTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResignerTests" */;
+			buildPhases = (
+				07FE86B016C7271A00AC4D31 /* Sources */,
+				07FE86B116C7271A00AC4D31 /* Frameworks */,
+				07FE86B216C7271A00AC4D31 /* Resources */,
+				07FE86B316C7271A00AC4D31 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				07FE86BA16C7271A00AC4D31 /* PBXTargetDependency */,
+			);
+			name = AppResignerTests;
+			productName = AppResignerTests;
+			productReference = 07FE86B516C7271A00AC4D31 /* AppResignerTests.octest */;
+			productType = "com.apple.product-type.bundle";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		07FE868D16C7271A00AC4D31 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0460;
+				ORGANIZATIONNAME = "Carpe Lucem Media Group";
+			};
+			buildConfigurationList = 07FE869016C7271A00AC4D31 /* Build configuration list for PBXProject "AppResigner" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 07FE868C16C7271A00AC4D31;
+			productRefGroup = 07FE869616C7271A00AC4D31 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				07FE869416C7271A00AC4D31 /* AppResigner */,
+				07FE86B416C7271A00AC4D31 /* AppResignerTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		07FE869316C7271A00AC4D31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */,
+				07FE86A916C7271A00AC4D31 /* Credits.rtf in Resources */,
+				07FE86AF16C7271A00AC4D31 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FE86B216C7271A00AC4D31 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE86C016C7271A00AC4D31 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		07FE86B316C7271A00AC4D31 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		07FE869116C7271A00AC4D31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE86A516C7271A00AC4D31 /* main.m in Sources */,
+				07FE86AC16C7271A00AC4D31 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		07FE86B016C7271A00AC4D31 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				07FE86C316C7271A00AC4D31 /* AppResignerTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		07FE86BA16C7271A00AC4D31 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 07FE869416C7271A00AC4D31 /* AppResigner */;
+			targetProxy = 07FE86B916C7271A00AC4D31 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		07FE86A116C7271A00AC4D31 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07FE86A216C7271A00AC4D31 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		07FE86A716C7271A00AC4D31 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07FE86A816C7271A00AC4D31 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		07FE86AD16C7271A00AC4D31 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07FE86AE16C7271A00AC4D31 /* en */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		07FE86BE16C7271A00AC4D31 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				07FE86BF16C7271A00AC4D31 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		07FE86C416C7271A00AC4D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		07FE86C516C7271A00AC4D31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		07FE86C716C7271A00AC4D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
+				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		07FE86C816C7271A00AC4D31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
+				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		07FE86CA16C7271A00AC4D31 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppResigner.app/Contents/MacOS/AppResigner";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
+				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Debug;
+		};
+		07FE86CB16C7271A00AC4D31 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppResigner.app/Contents/MacOS/AppResigner";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
+				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = octest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		07FE869016C7271A00AC4D31 /* Build configuration list for PBXProject "AppResigner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FE86C416C7271A00AC4D31 /* Debug */,
+				07FE86C516C7271A00AC4D31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResigner" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FE86C716C7271A00AC4D31 /* Debug */,
+				07FE86C816C7271A00AC4D31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResignerTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				07FE86CA16C7271A00AC4D31 /* Debug */,
+				07FE86CB16C7271A00AC4D31 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 07FE868D16C7271A00AC4D31 /* Project object */;
+}
