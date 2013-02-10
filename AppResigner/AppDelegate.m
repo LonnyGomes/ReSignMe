@@ -18,6 +18,7 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.sm = [SecurityManager defaultManager];
+    [self.sm getDistributionCertificatesList];
 }
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {

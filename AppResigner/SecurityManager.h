@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 
+#define kSecurityManagerSubjectNameUTF8CStr "iPhone Developer:"
+
 @interface SecurityManager : NSObject
 + (SecurityManager *) defaultManager;
-- (NSArray *)getCertificatesList;
+- (NSArray *)getDistributionCertificatesList;
 @end

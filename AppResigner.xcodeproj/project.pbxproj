@@ -10,6 +10,8 @@
 		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9216C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
+		07E0CB9716C75F1B005E6C6A /* CertificateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9616C75F1B005E6C6A /* CertificateModel.m */; };
+		07E0CB9816C75F1B005E6C6A /* CertificateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9616C75F1B005E6C6A /* CertificateModel.m */; };
 		07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
 		07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A116C7271A00AC4D31 /* InfoPlist.strings */; };
 		07FE86A516C7271A00AC4D31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86A416C7271A00AC4D31 /* main.m */; };
@@ -36,6 +38,8 @@
 		07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecurityManager.h; sourceTree = "<group>"; };
 		07E0CB9016C73E8F005E6C6A /* SecurityManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SecurityManager.m; sourceTree = "<group>"; };
 		07E0CB9316C73FEA005E6C6A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		07E0CB9516C75F1B005E6C6A /* CertificateModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateModel.h; sourceTree = "<group>"; };
+		07E0CB9616C75F1B005E6C6A /* CertificateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateModel.m; sourceTree = "<group>"; };
 		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppResigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -128,6 +132,8 @@
 				07FE869F16C7271A00AC4D31 /* Supporting Files */,
 				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
 				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
+				07E0CB9516C75F1B005E6C6A /* CertificateModel.h */,
+				07E0CB9616C75F1B005E6C6A /* CertificateModel.m */,
 			);
 			path = AppResigner;
 			sourceTree = "<group>";
@@ -274,6 +280,7 @@
 				07FE86A516C7271A00AC4D31 /* main.m in Sources */,
 				07FE86AC16C7271A00AC4D31 /* AppDelegate.m in Sources */,
 				07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */,
+				07E0CB9716C75F1B005E6C6A /* CertificateModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -283,6 +290,7 @@
 			files = (
 				07FE86C316C7271A00AC4D31 /* AppResignerTests.m in Sources */,
 				07E0CB9216C73E8F005E6C6A /* SecurityManager.m in Sources */,
+				07E0CB9816C75F1B005E6C6A /* CertificateModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
