@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0781C6A416C99ECA007CE5D1 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0781C6A316C99ECA007CE5D1 /* OCMock.framework */; };
 		07A1C23F16C7DF2200CEA565 /* AppDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1C23E16C7DF2200CEA565 /* AppDropView.m */; };
 		07A1C24016C7DF2200CEA565 /* AppDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1C23E16C7DF2200CEA565 /* AppDropView.m */; };
 		07B0951416C7FF4900772E86 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
@@ -38,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0781C6A316C99ECA007CE5D1 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		07A1C23D16C7DF2200CEA565 /* AppDropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDropView.h; sourceTree = "<group>"; };
 		07A1C23E16C7DF2200CEA565 /* AppDropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDropView.m; sourceTree = "<group>"; };
 		07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SecurityManager.h; sourceTree = "<group>"; };
@@ -83,6 +85,7 @@
 				07B0951416C7FF4900772E86 /* Security.framework in Frameworks */,
 				07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */,
 				07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
+				0781C6A416C99ECA007CE5D1 /* OCMock.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -112,6 +115,7 @@
 		07FE869716C7271A00AC4D31 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0781C6A316C99ECA007CE5D1 /* OCMock.framework */,
 				07FE869816C7271A00AC4D31 /* Cocoa.framework */,
 				07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */,
 				07FE869A16C7271A00AC4D31 /* Other Frameworks */,
@@ -438,7 +442,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppResigner.app/Contents/MacOS/AppResigner";
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
@@ -453,7 +460,10 @@
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/AppResigner.app/Contents/MacOS/AppResigner";
 				COMBINE_HIDPI_IMAGES = YES;
-				FRAMEWORK_SEARCH_PATHS = "\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"";
+				FRAMEWORK_SEARCH_PATHS = (
+					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
+					"\"$(SRCROOT)\"",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
