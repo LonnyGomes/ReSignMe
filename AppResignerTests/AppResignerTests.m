@@ -8,6 +8,13 @@
 
 #import "AppResignerTests.h"
 #import "AppDelegate.h"
+#import "SecurityManager.h"
+#import "CertificateModel.h"
+#import <OCMock/OCMock.h>
+
+@interface AppDelegate(UnitTests)
+@property (nonatomic, strong) SecurityManager *sm;
+@end
 
 @implementation AppResignerTests
 AppDelegate *appDelegate;
@@ -24,6 +31,34 @@ AppDelegate *appDelegate;
     // Tear-down code here.
     
     [super tearDown];
+}
+
+- (void)testApplicationDidFinishLaunching {
+    [appDelegate applicationDidFinishLaunching:nil];
+    STAssertNotNil(appDelegate.sm, @"Security manager was not initialized");
+    STAssertNotNil(appDelegate.outputPathURL, @"The output path should be populated on initialization");
+}
+
+- (void)testPopulateCertIsCalledAtInit {
+    id appDelegateMock = [OCMockObject mockForClass:[AppDelegate class]];
+    [[appDelegateMock expect] populateCertPopDown:[OCMArg any]];
+    [appDelegateMock verify];
+}
+
+- (void)testPopulateCertPopDown {
+    id mockCertModel = [OCMockObject mockForClass:[CertificateModel class]];
+    [[[mockCertModel stub] andReturn:@"My Label"] label];
+    
+    id mockCertPopDownBtn = [OCMockObject mockForClass:[NSPopUpButton class]];
+    [[mockCertPopDownBtn expect] removeAllItems];
+    [[mockCertPopDownBtn expect] addItemWithTitle:[OCMArg any]];
+    appDelegate.certPopDownBtn = mockCertModel;
+    
+    //NSArray *models = @[mockCertModel];
+    
+    [appDelegate populateCertPopDown:[NSArray arrayWithObject:mockCertModel]];
+//    
+//    [mockCertPopDownBtn verify];
 }
 
 - (void)testOutputPathURL
