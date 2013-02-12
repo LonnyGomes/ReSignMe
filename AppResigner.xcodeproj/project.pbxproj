@@ -89,6 +89,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0708D7F416C9C4CC009748EF /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
+				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
+				07E0CB9516C75F1B005E6C6A /* CertificateModel.h */,
+				07E0CB9616C75F1B005E6C6A /* CertificateModel.m */,
+			);
+			name = Models;
+			sourceTree = "<group>";
+		};
 		07FE868C16C7271A00AC4D31 = {
 			isa = PBXGroup;
 			children = (
@@ -133,16 +144,13 @@
 		07FE869E16C7271A00AC4D31 /* AppResigner */ = {
 			isa = PBXGroup;
 			children = (
+				0708D7F416C9C4CC009748EF /* Models */,
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
 				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,
-				07FE869F16C7271A00AC4D31 /* Supporting Files */,
-				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
-				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
-				07E0CB9516C75F1B005E6C6A /* CertificateModel.h */,
-				07E0CB9616C75F1B005E6C6A /* CertificateModel.m */,
 				07A1C23D16C7DF2200CEA565 /* AppDropView.h */,
 				07A1C23E16C7DF2200CEA565 /* AppDropView.m */,
+				07FE869F16C7271A00AC4D31 /* Supporting Files */,
 			);
 			path = AppResigner;
 			sourceTree = "<group>";
