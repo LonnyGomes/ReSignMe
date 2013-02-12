@@ -149,8 +149,8 @@
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
 				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,
-				07A1C23D16C7DF2200CEA565 /* AppDropView.h */,
 				0708D7F516C9CD0E009748EF /* AppDropDelegate.h */,
+				07A1C23D16C7DF2200CEA565 /* AppDropView.h */,
 				07A1C23E16C7DF2200CEA565 /* AppDropView.m */,
 				07FE869F16C7271A00AC4D31 /* Supporting Files */,
 			);

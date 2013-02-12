@@ -13,5 +13,5 @@
 @protocol AppDropDelegate <NSObject>
 @required
 - (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)path;
-
+- (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path;
 @end

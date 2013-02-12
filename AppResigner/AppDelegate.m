@@ -38,16 +38,19 @@
             [self.statusScrollView setHidden:YES];
             [self.progressBar setHidden:YES];
             [self.dragMessageTextField setHidden:NO];
+            [self.boxOutline setHidden:NO];
             break;
         case DragStateAppSelected:
             [self.statusScrollView setHidden:YES];
             [self.progressBar setHidden:YES];
             [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:NO];
             break;
         case DragStateReSign:
             [self.statusScrollView setHidden:NO];
             [self.progressBar setHidden:NO];
             [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:YES];
             break;
         default:
             break;
@@ -133,8 +136,13 @@
 
 #pragma mark - AppDropView delegate methods
 - (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)path {
-    
+    [self setupDragState:DragStateAppSelected];
 }
+
+- (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path {
+    [self setupDragState:DragStateInital];
+}
+
 
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];

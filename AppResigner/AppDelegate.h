@@ -44,5 +44,7 @@ typedef enum {
 @property (weak) IBOutlet AppDropView *dropView;
 @property (weak) IBOutlet NSProgressIndicator *progressBar;
 @property (weak) IBOutlet NSTextField *dragMessageTextField;
+@property (weak) IBOutlet NSBox *boxOutline;
+@property (weak) IBOutlet NSButton *reSignBtn;
 
 @end

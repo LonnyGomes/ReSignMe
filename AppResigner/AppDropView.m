@@ -102,10 +102,14 @@
     if ([self isValidForFileAtPath:path]) {
         return YES;
     } else {
-        self.isInDragState = YES;
+        self.isInDragState = NO;
         [self setNeedsDisplay:YES];
         
         NSRunAlertPanel(@"Invalid file", @"Please select an ipa. It can be dragged into the application.", nil, nil, nil);
+        
+        if (self.delegate) {
+            [self.delegate performSelector:@selector(appDropView:invalidFileWasDraggedIntoView:) withObject:self withObject:path];
+        }
         return NO;
     }    
 }
