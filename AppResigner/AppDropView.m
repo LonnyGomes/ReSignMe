@@ -7,6 +7,11 @@
 //
 
 #import "AppDropView.h"
+@interface AppDropView()
+- (BOOL)isValidForFileAtPath:(NSString *)path;
+- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender;
+@property (nonatomic, assign) BOOL isValidFile;
+@end
 
 @implementation AppDropView
 
@@ -16,60 +21,112 @@
     if (self) {
         [self registerForDraggedTypes:@[NSFilenamesPboardType]];
         [self addCursorRect:self.bounds cursor:[NSCursor openHandCursor]];
+        self.isInDragState = NO;
+        self.isValidFile = NO;
     }
     
     return self;
 }
 
+
+#pragma mark - ipa valididy checks
+- (BOOL)isValidForFileAtPath:(NSString *)path {
+    if ([path hasSuffix:@".ipa"]) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender {
+    NSString *path;
+    NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+    //For now, just handle one file
+    if (filenames.count > 0) {
+        path = [filenames objectAtIndex:0];
+    }
+    
+    return path;
+}
+
 #pragma mark - cursor methods
 - (void)activateDragCursor {
-    [[NSCursor openHandCursor] set];
+    if (self.isValidFile) {
+        [[NSCursor openHandCursor] set];
+    } else {
+        [self deactivetDragCursor];
+    }
 }
 
 - (void)deactivetDragCursor {
-    [NSCursor pop];
+    [[NSCursor operationNotAllowedCursor] set];
 }
 
-#pragma mark - drag protocol methods
 
+#pragma mark - drag protocol methods
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
+    NSString *path = [self getFilenameFromPasteBoard:sender];
+    self.isInDragState = YES;
+    self.isValidFile = [self isValidForFileAtPath:path];
+    [self setNeedsDisplay:YES];
     [self activateDragCursor];
     return NSDragOperationGeneric;
 }
 
+
 - (void)draggingExited:(id<NSDraggingInfo>)sender {
     [self deactivetDragCursor];
+    self.isInDragState = NO;
+    self.isValidFile = NO;
     [self setNeedsDisplay:YES];
 }
+
 - (BOOL)prepareForDragOperation:(id<NSDraggingInfo>)sender {
+    self.isInDragState = YES;
     [self setNeedsDisplay:YES];
+
     return YES;
 }
 
-- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
-    NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-    //For now, just handle one file
-    if (filenames.count > 0) {
-        NSString *path = [filenames objectAtIndex:0];
-        
-        if ([path hasSuffix:@".ipa"]) {
-            return YES;
-        }
-    }
+- (NSDragOperation)draggingUpdated:(id < NSDraggingInfo >)sender {
+    [self activateDragCursor];
+    self.isInDragState = YES;
+    [self setNeedsDisplay:YES];
     
-    NSRunAlertPanel(@"Invalid file", @"Please select an ipa", nil, nil, nil);
-    return NO;
+    return NSDragOperationGeneric;
+}
+
+- (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
+    NSString *path = [self getFilenameFromPasteBoard:sender];
+   
+    if ([self isValidForFileAtPath:path]) {
+        return YES;
+    } else {
+        self.isInDragState = YES;
+        [self setNeedsDisplay:YES];
+        
+        NSRunAlertPanel(@"Invalid file", @"Please select an ipa. It can be dragged into the application.", nil, nil, nil);
+        return NO;
+    }    
 }
 
 - (void)concludeDragOperation:(id<NSDraggingInfo>)sender {
     [self deactivetDragCursor];
-    NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
-    self.selectedIPA = [filenames objectAtIndex:0];
+    [self setNeedsDisplay:YES];
+    
+    self.selectedIPA = [self getFilenameFromPasteBoard:sender];
 }
 
 - (void)drawRect:(NSRect)dirtyRect
 {
-    // Drawing code here.
+    if (!self.isInDragState) return;
+    CGContextRef context = (CGContextRef)([[NSGraphicsContext currentContext] graphicsPort]);
+    
+    NSColor *clr = (self.isValidFile) ? HOVER_CLR_VALID : HOVER_CLR_INVALID;
+    CGColorRef hoverClr = clr.CGColor;
+    
+    CGContextSetFillColorWithColor(context, hoverClr);
+    CGContextFillRect(context, self.bounds);
 }
 
 @end
