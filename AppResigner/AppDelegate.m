@@ -60,9 +60,9 @@
                                              selector:@selector(processSecuirtyManagerEvent:) name:kSecurityManagerNotificationEventOutput object:nil];
 }
 
-- (void)setOutputPathURL:(NSURL *)outputPathURL {
-    _outputPathURL = outputPathURL;
-    [self.pathTextField setStringValue:outputPathURL.path];
+- (void)setOutputPathURL:(NSURL *)pathURL {
+    _outputPathURL = pathURL;
+    [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
 }
 
 - (void)populateCertPopDown:(NSArray *)certModels {
