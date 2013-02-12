@@ -22,6 +22,7 @@
 #define kSecurityManagerWorkingSubDir @"dump"
 #define kSecurityManagerPayloadDir @"Payload"
 #define kSecurityManagerResourcesPlistDir @"ResourceRules.plist"
+#define kSecurityManagerRenameStr @"_renamed"
 
 @interface SecurityManager()
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
@@ -105,6 +106,9 @@ static SecurityManager *_certManager = nil;
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
     
+    //retrieve the ipa name
+    NSString *ipaName = [appPathURL lastPathComponent];
+    
     //create temp folder to perform work
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:@"Initializing re-signing process ..."];
@@ -127,7 +131,7 @@ static SecurityManager *_certManager = nil;
     
     //copy the ipa over to the temp folder
     [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Copying %@ to %@", [appPathURL lastPathComponent], [tmpPathURL path]]];
+              withMessage:[NSString stringWithFormat:@"Copying %@ to %@", ipaName, [tmpPathURL path]]];
     
     NSTask *cpAppTask = [[NSTask alloc] init];
     [cpAppTask setLaunchPath:kCmdCp];
@@ -147,11 +151,11 @@ static SecurityManager *_certManager = nil;
     }
     
     //set location of the copied IPA so we can unzip it
-    NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:[appPathURL lastPathComponent]];
+    NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:ipaName];
     NSURL *tempIpaDstPath = [tmpPathURL URLByAppendingPathComponent:kSecurityManagerWorkingSubDir];
     
     [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Unziping %@ to %@ ...", [appPathURL lastPathComponent], [tmpPathURL path]]];
+              withMessage:[NSString stringWithFormat:@"Unziping %@ to %@ ...", ipaName, [tmpPathURL path]]];
     //now unzip the contents of the ipa to prepare for resigning
     NSTask *unzipTask = [[NSTask alloc] init];
     pipe = [NSPipe pipe];
@@ -199,7 +203,7 @@ static SecurityManager *_certManager = nil;
     //TODO:do we need to insert the mobile provisioning profile?
     //sign the app
     [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Re-signing %@", [appPathURL lastPathComponent]]];
+              withMessage:[NSString stringWithFormat:@"Re-signing %@", ipaName]];
     NSTask *codeSignTask = [[NSTask alloc] init];
     [codeSignTask setLaunchPath:kCmdCodeSign];
     [codeSignTask setArguments:codesignArgs];
@@ -215,6 +219,19 @@ static SecurityManager *_certManager = nil;
     NSString *codesignOutput = [[NSString alloc] initWithData:[file readDataToEndOfFile] encoding:NSUTF8StringEncoding];
     [self postNotifcation:kSecurityManagerNotificationEventOutput
               withMessage:codesignOutput];
+    
+    //Repackage app
+    NSString *resignedAppName = [[ipaName stringByDeletingPathExtension] stringByAppendingFormat:@"%@.ipa",kSecurityManagerRenameStr];
+    NSString *zipOutputPath = [[outputPathURL URLByAppendingPathComponent:resignedAppName] path];
+    
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Saving re-signed app '%@' to output directory: %@ ...", resignedAppName, [outputPathURL path]]];
+    NSTask *zipTask = [[NSTask alloc] init];
+    [zipTask setLaunchPath:kCmdZip];
+    [zipTask setArguments:@[@"-q", @"-r", zipOutputPath, [payloadPathURL path]]];
+    
+    [zipTask launch];
+    [zipTask waitUntilExit];
     
     
     
