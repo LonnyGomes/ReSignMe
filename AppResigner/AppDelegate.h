@@ -23,6 +23,11 @@ typedef enum {
 - (void)populateCertPopDown:(NSArray *)certModels;
 - (void)setupDragState:(DragState)isDragState;
 - (void)initTextFields;
+- (void)registerForNotifications;
+
+//Secuirty manager notifcation selectors
+- (void)processSecuirtyManagerEvent:(NSNotification *)notification;
+
 //Properties
 @property (nonatomic, strong) NSURL *outputPathURL;
 

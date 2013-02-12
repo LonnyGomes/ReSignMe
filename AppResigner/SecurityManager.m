@@ -20,6 +20,10 @@
 #define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
 #define kSecurityManagerWorkingSubDir @"dump"
 
+@interface SecurityManager()
+- (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
+@end
+
 @implementation SecurityManager
 static SecurityManager *_certManager = nil;
 + (SecurityManager *) defaultManager {
@@ -90,11 +94,18 @@ static SecurityManager *_certManager = nil;
     return [NSArray arrayWithArray:certList];
 }
 
+- (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message {
+    [[NSNotificationCenter defaultCenter] postNotificationName:type object:self userInfo:[NSDictionary dictionaryWithObject:message forKey:kSecurityManagerNotificationKey]];
+}
+
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
     
     //create temp folder to perform work
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:@"Creating temp directory ..."];
+    
     NSTask *mktmpTask = [[NSTask alloc] init];
     [mktmpTask setLaunchPath:kCmdMkTemp];
     [mktmpTask setArguments:@[@"-d", kSecurityManagerTmpFileTemplate]];
@@ -107,7 +118,14 @@ static SecurityManager *_certManager = nil;
     
     NSString *tmpPath = [[[NSString alloc] initWithData: [file readDataToEndOfFile] encoding: NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\n"  withString:@""];
     NSURL *tmpPathURL = [NSURL URLWithString:tmpPath];
+    
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Created temp directory: [%@]", [tmpPathURL path]]];
+    
     //copy the ipa over to the temp folder
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Copying %@ to %@", [appPathURL lastPathComponent], [tmpPathURL path]]];
+    
     NSTask *cpAppTask = [[NSTask alloc] init];
     [cpAppTask setLaunchPath:kCmdCp];
     NSString *cleanAppPath = [NSString stringWithFormat:@"%@", [appPathURL path]];
@@ -129,13 +147,24 @@ static SecurityManager *_certManager = nil;
     NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:[appPathURL lastPathComponent]];
     NSURL *tempIpaDstPath = [tmpPathURL URLByAppendingPathComponent:kSecurityManagerWorkingSubDir];
     
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Unziping %@ to %@ ...", [appPathURL lastPathComponent], [tmpPathURL path]]];
     //now unzip the contents of the ipa to prepare for resigning
     NSTask *unzipTask = [[NSTask alloc] init];
+    pipe = [NSPipe pipe];
+    file = [pipe fileHandleForReading];
+    
+    [unzipTask setStandardOutput:pipe];
+    [unzipTask setStandardError:pipe];
     [unzipTask setLaunchPath:kCmdUnzip];
     [unzipTask setArguments:@[[tempIpaSrcPath path], @"-d", [tempIpaDstPath path]]];
     [unzipTask launch];
     [unzipTask waitUntilExit];
     
+    //TODO: read this in asynchononusly
+    NSString *unzipOutput = [[NSString alloc] initWithData: [file readDataToEndOfFile] encoding: NSUTF8StringEncoding];
+    
+    [self postNotifcation:kSecurityManagerNotificationEventOutput withMessage:unzipOutput];
     
     //NSTask *codeSignTask = [[NSTask alloc] init];
     

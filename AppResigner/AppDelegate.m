@@ -24,6 +24,7 @@
     self.outputPathURL = kAppResignerDefaultOutputURL;
     [self setupDragState:DragStateInital];
     [self.dropView setDelegate:self];
+    [self registerForNotifications];
 }
 
 - (void)initTextFields {
@@ -52,6 +53,13 @@
     }    
 }
 
+- (void)registerForNotifications {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(processSecuirtyManagerEvent:) name:kSecurityManagerNotificationEvent object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(processSecuirtyManagerEvent:) name:kSecurityManagerNotificationEventOutput object:nil];
+}
+
 - (void)setOutputPathURL:(NSURL *)outputPathURL {
     _outputPathURL = outputPathURL;
     [self.pathTextField setStringValue:outputPathURL.path];
@@ -64,6 +72,18 @@
     }
 }
 
+#pragma mark - Security Manager Notifcation selectors
+- (void)processSecuirtyManagerEvent:(NSNotification *)notification {
+    NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
+    NSLog(@"Got notification:%@", message);
+    //TODO:based on the notification type, format the text
+    if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
+        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
+    } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
+        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
+    }
+
+}
 
 #pragma mark - IB Actions
 - (IBAction)browseBtnPressed:(id)sender {
@@ -96,4 +116,9 @@
 - (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)path {
     
 }
+
+- (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
 @end
