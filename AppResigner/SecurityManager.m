@@ -17,8 +17,11 @@
 #define kCmdCp @"/bin/cp"
 #define kCmdRm @"/bin/rm"
 
+
 #define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
 #define kSecurityManagerWorkingSubDir @"dump"
+#define kSecurityManagerPayloadDir @"Payload"
+#define kSecurityManagerResourcesPlistDir @"ResourceRules.plist"
 
 @interface SecurityManager()
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
@@ -104,7 +107,7 @@ static SecurityManager *_certManager = nil;
     
     //create temp folder to perform work
     [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:@"Creating temp directory ..."];
+              withMessage:@"Initializing re-signing process ..."];
     
     NSTask *mktmpTask = [[NSTask alloc] init];
     [mktmpTask setLaunchPath:kCmdMkTemp];
@@ -120,7 +123,7 @@ static SecurityManager *_certManager = nil;
     NSURL *tmpPathURL = [NSURL URLWithString:tmpPath];
     
     [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Created temp directory: [%@]", [tmpPathURL path]]];
+              withMessage:[NSString stringWithFormat:@"Created temp directory: %@", [tmpPathURL path]]];
     
     //copy the ipa over to the temp folder
     [self postNotifcation:kSecurityManagerNotificationEvent
@@ -166,7 +169,53 @@ static SecurityManager *_certManager = nil;
     
     [self postNotifcation:kSecurityManagerNotificationEventOutput withMessage:unzipOutput];
     
-    //NSTask *codeSignTask = [[NSTask alloc] init];
+    NSError *payloadError;
+    
+    NSURL *payloadPathURL = [tempIpaDstPath URLByAppendingPathComponent:kSecurityManagerPayloadDir];
+    NSArray *payloadPathContents = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:[payloadPathURL path] error:&payloadError];
+    
+    if (payloadError) {
+        NSLog(@"Could not open: %@", [payloadPathURL path]);
+        //TODO: Handle errors
+        return;
+    } else if (payloadPathContents.count != 1) {
+        NSLog(@"Unexpected output in Payloads directory of the IPA!");
+        //TODO: handle errors
+        return;
+    }
+    
+    //setup paths for codesign
+    NSURL *appContentsURL = [payloadPathURL URLByAppendingPathComponent:[payloadPathContents objectAtIndex:0]];
+    NSURL *resourcesPathURL = [appContentsURL URLByAppendingPathComponent:kSecurityManagerResourcesPlistDir];
+    
+    NSArray *codesignArgs = @[ @"--force",
+                               @"--sign",
+                               identity,
+                               @"--resource-rules",
+                               [resourcesPathURL path],
+                               [appContentsURL path]];
+    
+    //TODO:check into codesign_allocate
+    //TODO:do we need to insert the mobile provisioning profile?
+    //sign the app
+    [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Re-signing %@", [appPathURL lastPathComponent]]];
+    NSTask *codeSignTask = [[NSTask alloc] init];
+    [codeSignTask setLaunchPath:kCmdCodeSign];
+    [codeSignTask setArguments:codesignArgs];
+    
+    pipe = [NSPipe pipe];
+    file = [pipe fileHandleForReading];
+    
+    [codeSignTask setStandardOutput:pipe];
+    [codeSignTask setStandardError:pipe];
+    [codeSignTask launch];
+    [codeSignTask waitUntilExit];
+    
+    NSString *codesignOutput = [[NSString alloc] initWithData:[file readDataToEndOfFile] encoding:NSUTF8StringEncoding];
+    [self postNotifcation:kSecurityManagerNotificationEventOutput
+              withMessage:codesignOutput];
+    
     
     
 }
