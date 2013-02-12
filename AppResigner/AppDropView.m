@@ -105,6 +105,8 @@
         self.isInDragState = NO;
         [self setNeedsDisplay:YES];
         
+        self.selectedIPA = nil;
+        
         NSRunAlertPanel(@"Invalid file", @"Please select an ipa. It can be dragged into the application.", nil, nil, nil);
         
         if (self.delegate) {

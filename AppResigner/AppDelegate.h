@@ -15,7 +15,8 @@
 typedef enum {
     DragStateInital, //inital state when app opens
     DragStateAppSelected, //state when an app is selected to resign
-    DragStateReSign //state when app is getting resigned
+    DragStateReSign, //state when app is getting resigned
+    DragStateReSignComplete
 } DragState;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, AppDropDelegate>

@@ -233,7 +233,7 @@ static SecurityManager *_certManager = nil;
     [zipTask launch];
     [zipTask waitUntilExit];
     
-    
+    [self postNotifcation:kSecurityManagerNotificationEventComplete withMessage:[NSString stringWithFormat:@"The ipa has been successuflly re-signed and is named '%@'", resignedAppName]];
     
 }
 

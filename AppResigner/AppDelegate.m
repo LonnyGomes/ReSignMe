@@ -36,22 +36,27 @@
     switch (dragState) {
         case DragStateInital:
             [self.statusScrollView setHidden:YES];
-            [self.progressBar setHidden:YES];
+            [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
             break;
         case DragStateAppSelected:
             [self.statusScrollView setHidden:YES];
-            [self.progressBar setHidden:YES];
+            [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
             break;
         case DragStateReSign:
             [self.statusScrollView setHidden:NO];
-            [self.progressBar setHidden:NO];
+            [self.progressBar startAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             break;
+        case DragStateReSignComplete:
+            [self.statusScrollView setHidden:NO];
+            [self.progressBar stopAnimation:self];
+            [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:YES];
         default:
             break;
     }    
@@ -59,9 +64,17 @@
 
 - (void)registerForNotifications {
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(processSecuirtyManagerEvent:) name:kSecurityManagerNotificationEvent object:nil];
+                                             selector:@selector(processSecuirtyManagerEvent:)
+                                                 name:kSecurityManagerNotificationEvent
+                                               object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(processSecuirtyManagerEvent:) name:kSecurityManagerNotificationEventOutput object:nil];
+                                             selector:@selector(processSecuirtyManagerEvent:)
+                                                 name:kSecurityManagerNotificationEventOutput
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(processSecuirtyManagerEvent:)
+                                                 name:kSecurityManagerNotificationEventComplete
+                                               object:nil];
 }
 
 - (void)setOutputPathURL:(NSURL *)pathURL {
@@ -101,6 +114,9 @@
         [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
         [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
+    } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
+        NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", nil, nil, nil);
+        [self setupDragState:DragStateReSignComplete];
     }
     
     [self scrollToBottom];

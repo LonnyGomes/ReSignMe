@@ -11,6 +11,7 @@
 #define kSecurityManagerNotificationKey @"notificationDictKey"
 #define kSecurityManagerNotificationEvent @"SecurityManagerNotificationEvent"
 #define kSecurityManagerNotificationEventOutput @"SecurityManagerNotificationEventOutput"
+#define kSecurityManagerNotificationEventComplete @"SecurityManagerNotificationEventComplete"
 #define kSecurityManagerSubjectNameUTF8CStr "iPhone Developer:"
 
 typedef NSString SMNotificationType;
