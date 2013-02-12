@@ -11,9 +11,10 @@
 #import "SecurityManager.h"
 
 @interface AppDelegate()
+- (void)scrollToBottom;
 @property (nonatomic, strong) SecurityManager *sm;
-
 @end
+
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
@@ -72,16 +73,34 @@
     }
 }
 
+- (void)scrollToBottom
+{
+    NSPoint newScrollOrigin;
+    
+    // assume that the scrollview is an existing variable
+    if ([[self.statusScrollView documentView] isFlipped]) {
+        newScrollOrigin=NSMakePoint(0.0,NSMaxY([[self.statusScrollView documentView] frame])
+                                    -NSHeight([[self.statusScrollView contentView] bounds]));
+    } else {
+        newScrollOrigin=NSMakePoint(0.0,0.0);
+    }
+    
+    [[self.statusScrollView documentView] scrollPoint:newScrollOrigin];
+    
+}
+
 #pragma mark - Security Manager Notifcation selectors
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
-    NSLog(@"Got notification:%@", message);
+    //NSLog(@"Got notification:%@", message);
     //TODO:based on the notification type, format the text
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
         [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
         [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
     }
+    
+    [self scrollToBottom];
 
 }
 
