@@ -8,11 +8,21 @@
 
 #import <Cocoa/Cocoa.h>
 #import "AppDropView.h"
+#import "AppDropDelegate.h"
 
 #define kAppResignerDefaultOutputURL [NSURL URLWithString:@"~/Desktop"]
-@interface AppDelegate : NSObject <NSApplicationDelegate>
+
+typedef enum {
+    DragStateInital, //inital state when app opens
+    DragStateAppSelected, //state when an app is selected to resign
+    DragStateReSign //state when app is getting resigned
+} DragState;
+
+@interface AppDelegate : NSObject <NSApplicationDelegate, AppDropDelegate>
 
 - (void)populateCertPopDown:(NSArray *)certModels;
+- (void)setupDragState:(DragState)isDragState;
+- (void)initTextFields;
 //Properties
 @property (nonatomic, strong) NSURL *outputPathURL;
 
@@ -24,7 +34,10 @@
 @property (assign) IBOutlet NSWindow *window;
 @property (weak) IBOutlet NSTextField *pathTextField;
 @property (weak) IBOutlet NSPopUpButton *certPopDownBtn;
-@property (weak) IBOutlet NSScrollView *statusTextView;
+@property (weak) IBOutlet NSScrollView *statusScrollView;
+@property (strong) IBOutlet NSTextView *statusTextView;
 @property (weak) IBOutlet AppDropView *dropView;
+@property (weak) IBOutlet NSProgressIndicator *progressBar;
+@property (weak) IBOutlet NSTextField *dragMessageTextField;
 
 @end

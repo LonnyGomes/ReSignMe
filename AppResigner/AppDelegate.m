@@ -19,8 +19,37 @@
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
     self.sm = [SecurityManager defaultManager];
+    
     [self populateCertPopDown:[self.sm getDistributionCertificatesList]];
     self.outputPathURL = kAppResignerDefaultOutputURL;
+    [self setupDragState:DragStateInital];
+    [self.dropView setDelegate:self];
+}
+
+- (void)initTextFields {
+    //TODO
+}
+
+- (void)setupDragState:(DragState)dragState {
+    switch (dragState) {
+        case DragStateInital:
+            [self.statusScrollView setHidden:YES];
+            [self.progressBar setHidden:YES];
+            [self.dragMessageTextField setHidden:NO];
+            break;
+        case DragStateAppSelected:
+            [self.statusScrollView setHidden:YES];
+            [self.progressBar setHidden:YES];
+            [self.dragMessageTextField setHidden:YES];
+            break;
+        case DragStateReSign:
+            [self.statusScrollView setHidden:NO];
+            [self.progressBar setHidden:NO];
+            [self.dragMessageTextField setHidden:YES];
+            break;
+        default:
+            break;
+    }    
 }
 
 - (void)setOutputPathURL:(NSURL *)outputPathURL {
@@ -52,6 +81,7 @@
 
 - (IBAction)reSignBtnPressed:(id)sender {
     if (self.dropView.selectedIPA && self.pathTextField.stringValue) {
+        [self setupDragState:DragStateReSign];
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
         NSURL *appURL = [NSURL URLWithString:self.dropView.selectedIPA];
         NSURL *outputURL = [NSURL URLWithString:self.pathTextField.stringValue];
@@ -60,5 +90,10 @@
         //TODO: handle errors more legantly
         NSLog(@"Not all fields are defined");
     }
+}
+
+#pragma mark - AppDropView delegate methods
+- (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)path {
+    
 }
 @end

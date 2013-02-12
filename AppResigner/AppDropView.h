@@ -7,6 +7,7 @@
 //
 
 #import <Cocoa/Cocoa.h>
+#include "AppDropDelegate.h"
 
 #define HOVER_CLR_VALID [NSColor colorWithDeviceRed:81.0/255.0 green:143/255.0 blue:212/255.0 alpha:.25]
 #define HOVER_CLR_INVALID [NSColor colorWithDeviceRed:227.0/255.0 green:36/255.0 blue:36/255.0 alpha:.25]
@@ -16,4 +17,5 @@
 - (void)deactivetDragCursor;
 @property (nonatomic, strong) NSString *selectedIPA;
 @property (nonatomic, assign) BOOL isInDragState;
+@property (nonatomic, assign) id<AppDropDelegate> delegate;
 @end

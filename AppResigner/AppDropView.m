@@ -39,7 +39,7 @@
 }
 
 - (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender {
-    NSString *path;
+    NSString *path = nil;
     NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
     //For now, just handle one file
     if (filenames.count > 0) {
@@ -112,9 +112,14 @@
 
 - (void)concludeDragOperation:(id<NSDraggingInfo>)sender {
     [self deactivetDragCursor];
+    self.isInDragState = NO;
     [self setNeedsDisplay:YES];
     
     self.selectedIPA = [self getFilenameFromPasteBoard:sender];
+    
+    if (self.delegate && self.selectedIPA) {
+        [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:self.selectedIPA];
+    }
 }
 
 - (void)drawRect:(NSRect)dirtyRect

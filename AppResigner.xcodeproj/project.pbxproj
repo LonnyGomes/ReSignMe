@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		0776384A16C9ADA70059EEA1 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0776384916C9ADA70059EEA1 /* OCMock.framework */; };
+		0776384A16C9ADA70059EEA1 /* OCMock.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0776384916C9ADA70059EEA1 /* OCMock.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		07A1C23F16C7DF2200CEA565 /* AppDropView.m in Sources */ = {isa = PBXBuildFile; fileRef = 07A1C23E16C7DF2200CEA565 /* AppDropView.m */; };
 		07B0951416C7FF4900772E86 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
 		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
@@ -36,6 +36,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0708D7F516C9CD0E009748EF /* AppDropDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDropDelegate.h; sourceTree = "<group>"; };
 		0776384916C9ADA70059EEA1 /* OCMock.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = OCMock.framework; sourceTree = "<group>"; };
 		07A1C23D16C7DF2200CEA565 /* AppDropView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppDropView.h; sourceTree = "<group>"; };
 		07A1C23E16C7DF2200CEA565 /* AppDropView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDropView.m; sourceTree = "<group>"; };
@@ -149,6 +150,7 @@
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
 				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,
 				07A1C23D16C7DF2200CEA565 /* AppDropView.h */,
+				0708D7F516C9CD0E009748EF /* AppDropDelegate.h */,
 				07A1C23E16C7DF2200CEA565 /* AppDropView.m */,
 				07FE869F16C7271A00AC4D31 /* Supporting Files */,
 			);
