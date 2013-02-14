@@ -124,7 +124,7 @@
     self.selectedIPA = [self getFilenameFromPasteBoard:sender];
     
     if (self.delegate && self.selectedIPA) {
-        [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:self.selectedIPA];
+        [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:[NSURL URLWithString:self.selectedIPA]];
     }
 }
 

@@ -13,6 +13,9 @@
 		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
 		07E0CB9716C75F1B005E6C6A /* CertificateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9616C75F1B005E6C6A /* CertificateModel.m */; };
+		07F8E6AF16CC4CD500B7090A /* AppInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */; };
+		07F8E6B016CC4CD500B7090A /* AppInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */; };
+		07F8E6B316CC505200B7090A /* iTunesIpaIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */; };
 		07FE869916C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
 		07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A116C7271A00AC4D31 /* InfoPlist.strings */; };
 		07FE86A516C7271A00AC4D31 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86A416C7271A00AC4D31 /* main.m */; };
@@ -45,6 +48,10 @@
 		07E0CB9316C73FEA005E6C6A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		07E0CB9516C75F1B005E6C6A /* CertificateModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateModel.h; sourceTree = "<group>"; };
 		07E0CB9616C75F1B005E6C6A /* CertificateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateModel.m; sourceTree = "<group>"; };
+		07F8E6AC16CC4CD500B7090A /* AppInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInfoViewController.h; sourceTree = "<group>"; };
+		07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInfoViewController.m; sourceTree = "<group>"; };
+		07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppInfoViewController.xib; sourceTree = "<group>"; };
+		07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesIpaIcon.png; sourceTree = "<group>"; };
 		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppResigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -101,6 +108,14 @@
 			name = Models;
 			sourceTree = "<group>";
 		};
+		07F8E6B116CC504700B7090A /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
 		07FE868C16C7271A00AC4D31 = {
 			isa = PBXGroup;
 			children = (
@@ -145,6 +160,7 @@
 		07FE869E16C7271A00AC4D31 /* AppResigner */ = {
 			isa = PBXGroup;
 			children = (
+				07F8E6B116CC504700B7090A /* Assets */,
 				0708D7F416C9C4CC009748EF /* Models */,
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
@@ -152,6 +168,9 @@
 				0708D7F516C9CD0E009748EF /* AppDropDelegate.h */,
 				07A1C23D16C7DF2200CEA565 /* AppDropView.h */,
 				07A1C23E16C7DF2200CEA565 /* AppDropView.m */,
+				07F8E6AC16CC4CD500B7090A /* AppInfoViewController.h */,
+				07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */,
+				07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */,
 				07FE869F16C7271A00AC4D31 /* Supporting Files */,
 			);
 			path = AppResigner;
@@ -262,6 +281,8 @@
 				07FE86A316C7271A00AC4D31 /* InfoPlist.strings in Resources */,
 				07FE86A916C7271A00AC4D31 /* Credits.rtf in Resources */,
 				07FE86AF16C7271A00AC4D31 /* MainMenu.xib in Resources */,
+				07F8E6B016CC4CD500B7090A /* AppInfoViewController.xib in Resources */,
+				07F8E6B316CC505200B7090A /* iTunesIpaIcon.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +322,7 @@
 				07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */,
 				07E0CB9716C75F1B005E6C6A /* CertificateModel.m in Sources */,
 				07A1C23F16C7DF2200CEA565 /* AppDropView.m in Sources */,
+				07F8E6AF16CC4CD500B7090A /* AppInfoViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

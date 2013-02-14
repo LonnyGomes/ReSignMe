@@ -26,6 +26,12 @@
     [self setupDragState:DragStateInital];
     [self.dropView setDelegate:self];
     [self registerForNotifications];
+    
+    //place appInfoView where it should be
+    self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
+
+    //[self.window.contentView replaceSubview:self.appInfoPlaceholderView with:self.appInfoVC.view];
+    [self.window.contentView addSubview:self.appInfoVC.view];
 }
 
 - (void)initTextFields {
@@ -39,6 +45,7 @@
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
+            [self.appInfoVC reset];
             break;
         case DragStateAppSelected:
             [self.statusScrollView setHidden:YES];
@@ -51,12 +58,14 @@
             [self.progressBar startAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
+            [self.appInfoVC reset];
             break;
         case DragStateReSignComplete:
             [self.statusScrollView setHidden:NO];
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
+            [self.appInfoVC reset];
         default:
             break;
     }    
@@ -151,8 +160,10 @@
 }
 
 #pragma mark - AppDropView delegate methods
-- (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)path {
+- (void)appDropView:(AppDropView *)appDropView fileWasDraggedIntoView:(NSURL *)ipaPathURL {
     [self setupDragState:DragStateAppSelected];
+    
+    [self.appInfoVC loadIpaFile:ipaPathURL];
 }
 
 - (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path {

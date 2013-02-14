@@ -9,6 +9,7 @@
 #import <Cocoa/Cocoa.h>
 #import "AppDropView.h"
 #import "AppDropDelegate.h"
+#import "AppInfoViewController.h"
 
 #define kAppResignerDefaultOutputURL [NSURL URLWithString:@"~/Desktop"]
 
@@ -47,5 +48,7 @@ typedef enum {
 @property (weak) IBOutlet NSTextField *dragMessageTextField;
 @property (weak) IBOutlet NSBox *boxOutline;
 @property (weak) IBOutlet NSButton *reSignBtn;
+@property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
+@property (weak) IBOutlet NSView *appInfoPlaceholderView;
 
 @end
