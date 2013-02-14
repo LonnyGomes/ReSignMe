@@ -36,6 +36,7 @@ typedef enum {
 //Interface builder actions
 - (IBAction)browseBtnPressed:(id)sender;
 - (IBAction)reSignBtnPressed:(id)sender;
+- (IBAction)clearBtnPressed:(id)sender;
 
 //Interface builder properties
 @property (assign) IBOutlet NSWindow *window;
@@ -50,5 +51,7 @@ typedef enum {
 @property (weak) IBOutlet NSButton *reSignBtn;
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
 @property (weak) IBOutlet NSView *appInfoPlaceholderView;
+@property (weak) IBOutlet NSButton *clearBtn;
+
 
 @end

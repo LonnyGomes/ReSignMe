@@ -46,12 +46,14 @@
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
+            [self.clearBtn setHidden:YES];
             break;
         case DragStateAppSelected:
             [self.statusScrollView setHidden:YES];
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
+            [self.clearBtn setHidden:YES];
             break;
         case DragStateReSign:
             [self.statusScrollView setHidden:NO];
@@ -59,6 +61,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.clearBtn setHidden:YES];
             break;
         case DragStateReSignComplete:
             [self.statusScrollView setHidden:NO];
@@ -66,6 +69,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.clearBtn setHidden:NO];
         default:
             break;
     }    
@@ -157,6 +161,12 @@
         //TODO: handle errors more legantly
         NSLog(@"Not all fields are defined");
     }
+}
+
+- (IBAction)clearBtnPressed:(id)sender {
+    self.dropView.selectedIPA = nil;
+    self.statusTextView.string = @"";
+    [self setupDragState:DragStateInital];
 }
 
 #pragma mark - AppDropView delegate methods
