@@ -242,7 +242,8 @@ static SecurityManager *_certManager = nil;
               withMessage:[NSString stringWithFormat:@"Saving re-signed app '%@' to output directory: %@ ...", resignedAppName, [outputPathURL path]]];
     NSTask *zipTask = [[NSTask alloc] init];
     [zipTask setLaunchPath:kCmdZip];
-    [zipTask setArguments:@[@"-q", @"-r", zipOutputPath, [payloadPathURL path]]];
+    [zipTask setCurrentDirectoryPath:[tempIpaDstPath path]];
+    [zipTask setArguments:@[@"-q", @"-r", zipOutputPath, kSecurityManagerPayloadDir]];
     
     [zipTask launch];
     [zipTask waitUntilExit];
