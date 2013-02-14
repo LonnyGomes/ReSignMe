@@ -41,6 +41,7 @@
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init ];
     [dateFormatter setDateFormat:@"dd MMM yyyy HH:mm:ss"];
 
+    self.fileOwnerTextField.stringValue = [fileAttribs fileOwnerAccountName];
     self.fileModificationTextField.stringValue =
         [dateFormatter stringFromDate:[fileAttribs fileModificationDate]];
     

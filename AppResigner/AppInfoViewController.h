@@ -16,5 +16,6 @@
 @property (weak) IBOutlet NSTextField *fileModificationTextField;
 @property (weak) IBOutlet NSTextField *fileSizeTextField;
 @property (weak) IBOutlet NSTextField *fileCreationTextField;
+@property (weak) IBOutlet NSTextField *fileOwnerTextField;
 
 @end
