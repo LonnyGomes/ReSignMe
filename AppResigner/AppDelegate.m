@@ -80,7 +80,7 @@
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
-            [self.clearBtn setHidden:YES];
+            [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateAppSelected:
@@ -88,7 +88,7 @@
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
-            [self.clearBtn setHidden:YES];
+            [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:YES];
             break;
         case DragStateReSign:
@@ -97,7 +97,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
-            [self.clearBtn setHidden:YES];
+            [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateReSignComplete:
@@ -106,7 +106,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
-            [self.clearBtn setHidden:NO];
+            [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateRecoverableError:
@@ -115,7 +115,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
-            [self.clearBtn setHidden:NO];
+            [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateFatalError:
@@ -124,7 +124,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
-            [self.clearBtn setHidden:YES];
+            [self.doneBtn setHidden:YES];
             
             [self.dropView setHidden:YES];
             [self.reSignBtn setEnabled:NO];
@@ -267,7 +267,7 @@
     }
 }
 
-- (IBAction)clearBtnPressed:(id)sender {
+- (IBAction)doneBtnPressed:(id)sender {
     self.dropView.selectedIPA = nil;
     self.statusTextView.string = @"";
     [self setupDragState:DragStateInital];
