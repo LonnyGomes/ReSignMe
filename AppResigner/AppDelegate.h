@@ -32,12 +32,13 @@ typedef enum {
     DragStateInital, //inital state when app opens
     DragStateAppSelected, //state when an app is selected to resign
     DragStateReSign, //state when app is getting resigned
-    DragStateReSignComplete
+    DragStateReSignComplete,
+    DragStateFatalError
 } DragState;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, AppDropDelegate>
 
-- (void)populateCertPopDown:(NSArray *)certModels;
+- (BOOL)populateCertPopDown:(NSArray *)certModels;
 - (void)setupDragState:(DragState)isDragState;
 - (void)initTextFields;
 - (void)registerForNotifications;
@@ -67,6 +68,7 @@ typedef enum {
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
 @property (weak) IBOutlet NSView *appInfoPlaceholderView;
 @property (weak) IBOutlet NSButton *clearBtn;
+@property (weak) IBOutlet NSButton *browseBtn;
 
 
 @end

@@ -35,17 +35,26 @@
 {
     self.sm = [SecurityManager defaultManager];
     
-    [self populateCertPopDown:[self.sm getDistributionCertificatesList]];
+    //place appInfoView where it should be
+    self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
+    
+    //[self.window.contentView replaceSubview:self.appInfoPlaceholderView with:self.appInfoVC.view];
+    [self.window.contentView addSubview:self.appInfoVC.view];
+    
     self.outputPathURL = kAppResignerDefaultOutputURL;
-    [self setupDragState:DragStateInital];
     [self.dropView setDelegate:self];
     [self registerForNotifications];
     
-    //place appInfoView where it should be
-    self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
-
-    //[self.window.contentView replaceSubview:self.appInfoPlaceholderView with:self.appInfoVC.view];
-    [self.window.contentView addSubview:self.appInfoVC.view];
+    if ([self populateCertPopDown:[self.sm getDistributionCertificatesList]]) {
+        [self setupDragState:DragStateInital];
+    } else {
+        [self setupDragState:DragStateFatalError];
+         NSRunAlertPanel(@"Certificate Error",
+            @"No valid certificates were found!\n"
+            "Please install a distribution certificate using the 'Keychain Access' tool.\n\n"
+            "The Keychain Access tool can be found in Applications -> Utilities\n\n"
+            "A certificate is needed to resign your apps!", nil, nil, nil);
+    }
 }
 
 - (void)initTextFields {
@@ -84,6 +93,20 @@
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
             [self.clearBtn setHidden:NO];
+            break;
+        case DragStateFatalError:
+            [self.statusScrollView setHidden:YES];
+            [self.progressBar stopAnimation:self];
+            [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:NO];
+            [self.appInfoVC reset];
+            [self.clearBtn setHidden:YES];
+            
+            [self.dropView setHidden:YES];
+            [self.reSignBtn setEnabled:NO];
+            [self.browseBtn setEnabled:NO];
+            
+            break;
         default:
             break;
     }    
@@ -109,11 +132,18 @@
     [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
 }
 
-- (void)populateCertPopDown:(NSArray *)certModels {
+- (BOOL)populateCertPopDown:(NSArray *)certModels {
+    BOOL wasSuccess = YES;
+    [self.certPopDownBtn removeAllItems];
     for (CertificateModel *curModel in certModels) {
-        [self.certPopDownBtn removeAllItems];
         [self.certPopDownBtn addItemWithTitle:curModel.label];
     }
+    
+    if (!self.certPopDownBtn.itemArray.count) {
+        wasSuccess = NO;
+    }
+    
+    return wasSuccess;
 }
 
 - (void)scrollToBottom
