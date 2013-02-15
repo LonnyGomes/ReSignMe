@@ -48,6 +48,7 @@
 		07E0CB9316C73FEA005E6C6A /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
 		07E0CB9516C75F1B005E6C6A /* CertificateModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateModel.h; sourceTree = "<group>"; };
 		07E0CB9616C75F1B005E6C6A /* CertificateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateModel.m; sourceTree = "<group>"; };
+		07E3D7E716CDC1810084F838 /* AppUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUserDefaults.h; sourceTree = "<group>"; };
 		07F8E6AC16CC4CD500B7090A /* AppInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInfoViewController.h; sourceTree = "<group>"; };
 		07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInfoViewController.m; sourceTree = "<group>"; };
 		07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppInfoViewController.xib; sourceTree = "<group>"; };
@@ -162,6 +163,7 @@
 			children = (
 				07F8E6B116CC504700B7090A /* Assets */,
 				0708D7F416C9C4CC009748EF /* Models */,
+				07E3D7E716CDC1810084F838 /* AppUserDefaults.h */,
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
 				07FE86AD16C7271A00AC4D31 /* MainMenu.xib */,

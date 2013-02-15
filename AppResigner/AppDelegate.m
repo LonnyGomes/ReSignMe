@@ -23,6 +23,7 @@
 #import "AppDelegate.h"
 #import "CertificateModel.h"
 #import "SecurityManager.h"
+#import "AppUserDefaults.h"
 
 @interface AppDelegate()
 - (void)scrollToBottom;
@@ -36,12 +37,11 @@
     self.sm = [SecurityManager defaultManager];
     
     //place appInfoView where it should be
-    self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
+    //self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
+    [self.boxOutline addSubview:self.appInfoVC.view];
     
-    //[self.window.contentView replaceSubview:self.appInfoPlaceholderView with:self.appInfoVC.view];
-    [self.window.contentView addSubview:self.appInfoVC.view];
+    [self loadUserDefaults];
     
-    self.outputPathURL = kAppResignerDefaultOutputURL;
     [self.dropView setDelegate:self];
     [self registerForNotifications];
     
@@ -61,6 +61,17 @@
     //TODO
 }
 
+- (void)loadUserDefaults {
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *outputPath = [defaults stringForKey:kAppDefaultsOutputDir];
+    if (outputPath) {
+        self.outputPathURL = [NSURL URLWithString:outputPath];
+    } else {
+        self.outputPathURL = kAppResignerDefaultOutputURL;
+    }
+}
+
 - (void)setupDragState:(DragState)dragState {
     switch (dragState) {
         case DragStateInital:
@@ -70,6 +81,7 @@
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
             [self.clearBtn setHidden:YES];
+            [self.reSignBtn setEnabled:NO];
             break;
         case DragStateAppSelected:
             [self.statusScrollView setHidden:YES];
@@ -77,6 +89,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
             [self.clearBtn setHidden:YES];
+            [self.reSignBtn setEnabled:YES];
             break;
         case DragStateReSign:
             [self.statusScrollView setHidden:NO];
@@ -85,6 +98,7 @@
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
             [self.clearBtn setHidden:YES];
+            [self.reSignBtn setEnabled:NO];
             break;
         case DragStateReSignComplete:
             [self.statusScrollView setHidden:NO];
@@ -93,6 +107,7 @@
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
             [self.clearBtn setHidden:NO];
+            [self.reSignBtn setEnabled:NO];
             break;
         case DragStateRecoverableError:
             [self.statusScrollView setHidden:NO];
@@ -101,6 +116,7 @@
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
             [self.clearBtn setHidden:NO];
+            [self.reSignBtn setEnabled:NO];
             break;
         case DragStateFatalError:
             [self.statusScrollView setHidden:YES];
@@ -142,6 +158,11 @@
 - (void)setOutputPathURL:(NSURL *)pathURL {
     _outputPathURL = pathURL;
     [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
+    
+    //update the user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    [defaults setObject:self.pathTextField.stringValue forKey:kAppDefaultsOutputDir];
 }
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {

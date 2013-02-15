@@ -43,6 +43,7 @@ typedef enum {
 - (void)setupDragState:(DragState)isDragState;
 - (void)initTextFields;
 - (void)registerForNotifications;
+- (void)loadUserDefaults;
 
 //Secuirty manager notifcation selectors
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification;
@@ -67,7 +68,6 @@ typedef enum {
 @property (weak) IBOutlet NSBox *boxOutline;
 @property (weak) IBOutlet NSButton *reSignBtn;
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
-@property (weak) IBOutlet NSView *appInfoPlaceholderView;
 @property (weak) IBOutlet NSButton *clearBtn;
 @property (weak) IBOutlet NSButton *browseBtn;
 
