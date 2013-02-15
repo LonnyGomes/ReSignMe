@@ -192,6 +192,7 @@
         NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length, message.length);
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
         [self setupDragState:DragStateRecoverableError];
+        [self scrollToBottom];
         NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
                             @"The following error occurred when attempting to re-sign '%@':\n\n%@",
@@ -218,15 +219,30 @@
 }
 
 - (IBAction)reSignBtnPressed:(id)sender {
-    if (self.dropView.selectedIPA && self.pathTextField.stringValue) {
+    BOOL isDir;
+    BOOL outputPathExists =
+        [[NSFileManager defaultManager] fileExistsAtPath:self.pathTextField.stringValue
+                                             isDirectory:&isDir];
+    
+    if (!outputPathExists) {
+        NSRunAlertPanel(@"Invalid Path",
+                        @"The path specified for the Output Directory is "
+                        "either not specified or does not exist!",
+                        nil, nil, nil);
+    } else if (!isDir) {
+        NSRunAlertPanel(@"Not a valid Directory",
+                        @"The path specified for the Output Directory is not a directory!",
+                        nil, nil, nil);
+    } else if (!self.dropView.selectedIPA) {
+        NSRunAlertPanel(@"No ipa file specified",
+                        @"No ipa has been selected. Please drag an ipa file into the app to re-sign it.",
+                        nil, nil, nil);
+    } else {
         [self setupDragState:DragStateReSign];
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
         NSURL *appURL = [NSURL URLWithString:self.dropView.selectedIPA];
         NSURL *outputURL = [NSURL URLWithString:self.pathTextField.stringValue];
         [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
-    } else {
-        //TODO: handle errors more legantly
-        NSLog(@"Not all fields are defined");
     }
 }
 
