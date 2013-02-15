@@ -94,6 +94,14 @@
             [self.appInfoVC reset];
             [self.clearBtn setHidden:NO];
             break;
+        case DragStateRecoverableError:
+            [self.statusScrollView setHidden:NO];
+            [self.progressBar stopAnimation:self];
+            [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:YES];
+            [self.appInfoVC reset];
+            [self.clearBtn setHidden:NO];
+            break;
         case DragStateFatalError:
             [self.statusScrollView setHidden:YES];
             [self.progressBar stopAnimation:self];
@@ -124,6 +132,10 @@
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(processSecuirtyManagerEvent:)
                                                  name:kSecurityManagerNotificationEventComplete
+                                               object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(processSecuirtyManagerEvent:)
+                                                 name:kSecurityManagerNotificationEventError
                                                object:nil];
 }
 
@@ -167,6 +179,7 @@
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
     //NSLog(@"Got notification:%@", message);
     //TODO:based on the notification type, format the text
+    
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
         [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
@@ -174,6 +187,16 @@
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
         NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", nil, nil, nil);
         [self setupDragState:DragStateReSignComplete];
+    } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
+        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
+        NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length, message.length);
+        [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
+        [self setupDragState:DragStateRecoverableError];
+        NSRunAlertPanel(@"Signing Error",
+                        [NSString stringWithFormat:
+                            @"The following error occurred when attempting to re-sign '%@':\n\n%@",
+                                [self.dropView.selectedIPA lastPathComponent], message],
+                        nil, nil, nil);
     }
     
     [self scrollToBottom];

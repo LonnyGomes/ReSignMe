@@ -33,7 +33,8 @@ typedef enum {
     DragStateAppSelected, //state when an app is selected to resign
     DragStateReSign, //state when app is getting resigned
     DragStateReSignComplete,
-    DragStateFatalError
+    DragStateRecoverableError, //the user still can recover from this state
+    DragStateFatalError //there is no recovering from this state
 } DragState;
 
 @interface AppDelegate : NSObject <NSApplicationDelegate, AppDropDelegate>

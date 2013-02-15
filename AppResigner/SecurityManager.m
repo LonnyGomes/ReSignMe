@@ -231,6 +231,14 @@ static SecurityManager *_certManager = nil;
     [codeSignTask waitUntilExit];
     
     NSString *codesignOutput = [[NSString alloc] initWithData:[file readDataToEndOfFile] encoding:NSUTF8StringEncoding];
+    
+    NSInteger codeSignReturnCode = [codeSignTask terminationStatus];
+    if (codeSignReturnCode) {
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:[NSString stringWithFormat:@"FAILURE: %@", codesignOutput]];
+        return;
+    }
+    
     [self postNotifcation:kSecurityManagerNotificationEventOutput
               withMessage:codesignOutput];
     
