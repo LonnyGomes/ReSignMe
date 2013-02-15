@@ -13,6 +13,7 @@
 		07E0CB9116C73E8F005E6C6A /* SecurityManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9016C73E8F005E6C6A /* SecurityManager.m */; };
 		07E0CB9416C73FEA005E6C6A /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07E0CB9316C73FEA005E6C6A /* Security.framework */; };
 		07E0CB9716C75F1B005E6C6A /* CertificateModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 07E0CB9616C75F1B005E6C6A /* CertificateModel.m */; };
+		07E3D7F316CDD6310084F838 /* AppSignerIcon.iconset in Resources */ = {isa = PBXBuildFile; fileRef = 07E3D7F216CDD6310084F838 /* AppSignerIcon.iconset */; };
 		07F8E6AF16CC4CD500B7090A /* AppInfoViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */; };
 		07F8E6B016CC4CD500B7090A /* AppInfoViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */; };
 		07F8E6B316CC505200B7090A /* iTunesIpaIcon.png in Resources */ = {isa = PBXBuildFile; fileRef = 07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */; };
@@ -49,6 +50,7 @@
 		07E0CB9516C75F1B005E6C6A /* CertificateModel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CertificateModel.h; sourceTree = "<group>"; };
 		07E0CB9616C75F1B005E6C6A /* CertificateModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CertificateModel.m; sourceTree = "<group>"; };
 		07E3D7E716CDC1810084F838 /* AppUserDefaults.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppUserDefaults.h; sourceTree = "<group>"; };
+		07E3D7F216CDD6310084F838 /* AppSignerIcon.iconset */ = {isa = PBXFileReference; lastKnownFileType = folder.iconset; path = AppSignerIcon.iconset; sourceTree = "<group>"; };
 		07F8E6AC16CC4CD500B7090A /* AppInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppInfoViewController.h; sourceTree = "<group>"; };
 		07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInfoViewController.m; sourceTree = "<group>"; };
 		07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppInfoViewController.xib; sourceTree = "<group>"; };
@@ -120,6 +122,7 @@
 		07FE868C16C7271A00AC4D31 = {
 			isa = PBXGroup;
 			children = (
+				07E3D7F216CDD6310084F838 /* AppSignerIcon.iconset */,
 				07E0CB9316C73FEA005E6C6A /* Security.framework */,
 				07FE869E16C7271A00AC4D31 /* AppResigner */,
 				07FE86BB16C7271A00AC4D31 /* AppResignerTests */,
@@ -285,6 +288,7 @@
 				07FE86AF16C7271A00AC4D31 /* MainMenu.xib in Resources */,
 				07F8E6B016CC4CD500B7090A /* AppInfoViewController.xib in Resources */,
 				07F8E6B316CC505200B7090A /* iTunesIpaIcon.png in Resources */,
+				07E3D7F316CDD6310084F838 /* AppSignerIcon.iconset in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
