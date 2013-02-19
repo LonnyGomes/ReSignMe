@@ -1208,12 +1208,13 @@
 							<string key="NSFrame">{{539, 4}, {70, 25}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSWindow"/>
+							<reference key="NSNextKeyView"/>
 							<string key="NSReuseIdentifierKey">_NS:22</string>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="1045730751">
 								<int key="NSCellFlags">-2080374784</int>
 								<int key="NSCellFlags2">134217728</int>
-								<string key="NSContents">Clear</string>
+								<string key="NSContents">Done</string>
 								<reference key="NSSupport" ref="282372866"/>
 								<string key="NSCellIdentifier">_NS:22</string>
 								<reference key="NSControlView" ref="786414733"/>
@@ -3634,17 +3635,12 @@
 					<string key="superclassName">NSObject</string>
 					<dictionary class="NSMutableDictionary" key="actions">
 						<string key="browseBtnPressed:">id</string>
-						<string key="clearBtnPressed:">id</string>
 						<string key="doneBtnPressed:">id</string>
 						<string key="reSignBtnPressed:">id</string>
 					</dictionary>
 					<dictionary class="NSMutableDictionary" key="actionInfosByName">
 						<object class="IBActionInfo" key="browseBtnPressed:">
 							<string key="name">browseBtnPressed:</string>
-							<string key="candidateClassName">id</string>
-						</object>
-						<object class="IBActionInfo" key="clearBtnPressed:">
-							<string key="name">clearBtnPressed:</string>
 							<string key="candidateClassName">id</string>
 						</object>
 						<object class="IBActionInfo" key="doneBtnPressed:">
@@ -3661,7 +3657,6 @@
 						<string key="boxOutline">NSBox</string>
 						<string key="browseBtn">NSButton</string>
 						<string key="certPopDownBtn">NSPopUpButton</string>
-						<string key="clearBtn">NSButton</string>
 						<string key="doneBtn">NSButton</string>
 						<string key="dragMessageTextField">NSTextField</string>
 						<string key="dropView">AppDropView</string>
@@ -3688,10 +3683,6 @@
 						<object class="IBToOneOutletInfo" key="certPopDownBtn">
 							<string key="name">certPopDownBtn</string>
 							<string key="candidateClassName">NSPopUpButton</string>
-						</object>
-						<object class="IBToOneOutletInfo" key="clearBtn">
-							<string key="name">clearBtn</string>
-							<string key="candidateClassName">NSButton</string>
 						</object>
 						<object class="IBToOneOutletInfo" key="doneBtn">
 							<string key="name">doneBtn</string>
