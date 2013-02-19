@@ -60,6 +60,15 @@ AppDelegate *appDelegate;
     [appDelegateMock verify];
 }
 
+- (void)testAppShouldTerminate {
+    STAssertTrue([appDelegate applicationShouldTerminateAfterLastWindowClosed:nil], @"App should be set to terminate on last window close");
+}
+
+- (void)testLoadUserDefaults {
+    //confirm fields are set
+    STAssertNotNil(appDelegate.outputPathURL, @"The output path was not set in user defaults.");
+}
+
 //- (void)testPopulateCertPopDown {
 //    id mockCertModel = [OCMockObject mockForClass:[CertificateModel class]];
 //    [[[mockCertModel stub] andReturn:@"My Label"] label];
