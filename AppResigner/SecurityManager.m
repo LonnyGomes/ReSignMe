@@ -107,12 +107,13 @@ static SecurityManager *_certManager = nil;
     CFTypeRef searchResultsRef;
     const char *subjectName = kSecurityManagerSubjectNameUTF8CStr;
     CFStringRef subjectNameRef = CFStringCreateWithCString(NULL, subjectName,CFStringGetSystemEncoding());
-    CFIndex valCount = 4;
+    CFIndex valCount = 5;
     
     const void *searchKeys[] = {
         kSecClass, //type of keychain item to search for
         kSecMatchSubjectStartsWith,//search on subject
-        kSecReturnAttributes,//return propery
+        kSecReturnAttributes,//return dictionary of properties
+        kSecMatchValidOnDate, //valid for current date
         kSecMatchLimit//search limit
     };
     
@@ -120,8 +121,10 @@ static SecurityManager *_certManager = nil;
         kSecClassCertificate,
         subjectNameRef,
         kCFBooleanTrue,
+        kCFNull,
         kSecMatchLimitAll
     };
+    
     
     CFDictionaryRef dictRef=
         CFDictionaryCreate(kCFAllocatorDefault,
