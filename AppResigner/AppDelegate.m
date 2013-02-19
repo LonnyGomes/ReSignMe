@@ -71,6 +71,10 @@
     }
 }
 
+- (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)app {
+    return YES;
+}
+
 - (void)initTextFields {
     //TODO
 }
