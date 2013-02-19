@@ -24,13 +24,17 @@
 #import "CertificateModel.h"
 #import <Security/Security.h>
 
-#define kCmdCodeSign @"/usr/bin/codesign"
+#define kCmdDefaultPathCodeSign @"/usr/bin/codesign"
+#define kCmdDefaultPathCodeSignAlloc @"/usr/bin/codesign_alloc"
 #define kCmdZip @"/usr/bin/zip"
 #define kCmdUnzip @"/usr/bin/unzip"
 #define kCmdMkTemp @"/usr/bin/mktemp"
 #define kCmdCp @"/bin/cp"
 #define kCmdRm @"/bin/rm"
 
+#define kSecurityManagerBaseCdmCodeSign @"codesign"
+#define kSecurityManagerBaseCdmCodeSignAllocate @"codesign_allocate"
+#define kCmdDefaultPathXcodeSubDir @"/Contents/Developer/usr/bin/"
 
 #define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
 #define kSecurityManagerWorkingSubDir @"dump"
@@ -39,6 +43,9 @@
 #define kSecurityManagerRenameStr @"_renamed"
 
 @interface SecurityManager()
+@property (nonatomic, strong) NSString *pathForCodesign;
+@property (nonatomic, strong) NSString *pathForCodesignAlloc;
+
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
 @end
 
@@ -54,11 +61,45 @@ static SecurityManager *_certManager = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        UInt32 versionNum;
-        SecKeychainGetVersion(&versionNum);
+        //if we can set up
+        if (![self setupDependencies]) {
+            return nil;
+        }
         
     }
     return self;
+}
+
+- (BOOL)setupDependencies {
+    NSString* xCodePath = [ [ NSWorkspace sharedWorkspace ]
+                           absolutePathForAppBundleWithIdentifier: kSecurityManagerXcodeBundleName ];
+    
+    //first check for codesign and codesign_alloc binaries
+    if ([[NSFileManager defaultManager] fileExistsAtPath:kCmdDefaultPathCodeSign]) {
+        self.pathForCodesign = kCmdDefaultPathCodeSign;
+    } else if (xCodePath) {
+        //if codesign isn't found in it's default location, check for xcode
+        NSString *altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSign]];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
+            self.pathForCodesign = altPath;
+        }
+    }
+
+    
+    if ([[NSFileManager defaultManager] fileExistsAtPath:kCmdDefaultPathCodeSignAlloc]) {
+        self.pathForCodesignAlloc = kCmdDefaultPathCodeSignAlloc;
+    } else  if (xCodePath) {
+        //if not found at the default location but Xcode is installed
+        //lets get the path from there
+        NSString *altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]];
+        
+        if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
+            self.pathForCodesignAlloc = altPath;
+        }
+    }
+    
+    return (self.pathForCodesign && self.pathForCodesignAlloc);
 }
 
 - (NSArray *)getDistributionCertificatesList {
@@ -219,7 +260,8 @@ static SecurityManager *_certManager = nil;
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Re-signing %@", ipaName]];
     NSTask *codeSignTask = [[NSTask alloc] init];
-    [codeSignTask setLaunchPath:kCmdCodeSign];
+    [codeSignTask setLaunchPath:self.pathForCodesign];
+    [codeSignTask setEnvironment:[NSDictionary dictionaryWithObject:self.pathForCodesignAlloc forKey:@"CODESIGN_ALLOCATE"]];
     [codeSignTask setArguments:codesignArgs];
     
     pipe = [NSPipe pipe];

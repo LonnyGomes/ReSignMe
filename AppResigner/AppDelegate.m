@@ -34,19 +34,33 @@
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-    self.sm = [SecurityManager defaultManager];
-    
+       
     //place appInfoView where it should be
-    //self.appInfoVC.view.frame = self.appInfoPlaceholderView.frame;
     [self.boxOutline addSubview:self.appInfoVC.view];
     
-    [self loadUserDefaults];
-    
     [self.dropView setDelegate:self];
-    [self registerForNotifications];
+    
+    //clear all default entries
+    [self.certPopDownBtn removeAllItems];
+    
+    //ensure security manager stars w/o dependency problems
+    self.sm = [SecurityManager defaultManager];
+    if (!self.sm) {
+        [self setupDragState:DragStateFatalError];
+        NSRunAlertPanel(@"Dependency Error",
+                        @"Could not find an installation of XCode or the command line tools!\n"
+                        "The Xcode command line tools must be installed to resign you app. Please either install Xcode or the 'Command line tools for Xcode' located at the following url:\n\n"
+                        "https://developer.apple.com/downloads/index.action",
+                        nil, nil, nil);
+        return;
+    }
+    
+   
     
     if ([self populateCertPopDown:[self.sm getDistributionCertificatesList]]) {
         [self setupDragState:DragStateInital];
+        [self loadUserDefaults];
+        [self registerForNotifications];
     } else {
         [self setupDragState:DragStateFatalError];
          NSRunAlertPanel(@"Certificate Error",
@@ -167,7 +181,7 @@
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {
     BOOL wasSuccess = YES;
-    [self.certPopDownBtn removeAllItems];
+    
     for (CertificateModel *curModel in certModels) {
         [self.certPopDownBtn addItemWithTitle:curModel.label];
     }

@@ -29,11 +29,13 @@
 #define kSecurityManagerNotificationEventComplete @"SecurityManagerNotificationEventComplete"
 #define kSecurityManagerNotificationEventError @"SecurityManagerNotificationEventError"
 #define kSecurityManagerSubjectNameUTF8CStr "iPhone Distribution:"
+#define kSecurityManagerXcodeBundleName @"com.apple.dt.Xcode"
 
 typedef NSString SMNotificationType;
 
 @interface SecurityManager : NSObject
 + (SecurityManager *) defaultManager;
+- (BOOL)setupDependencies;
 - (NSArray *)getDistributionCertificatesList;
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL;
 @end
