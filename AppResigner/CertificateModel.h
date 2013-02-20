@@ -26,4 +26,5 @@
 @interface CertificateModel : NSObject
 - (id)initWithCertificateData:(NSDictionary *)certData;
 @property (nonatomic, strong) NSString *label;
+@property (nonatomic, strong) NSString *keyHash;
 @end

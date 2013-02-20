@@ -23,6 +23,7 @@
 #import "SecurityManager.h"
 #import "CertificateModel.h"
 #import <Security/Security.h>
+#include <CommonCrypto/CommonDigest.h>
 
 #define kCmdDefaultPathCodeSign @"/usr/bin/codesign"
 #define kCmdDefaultPathCodeSignAlloc @"/usr/bin/codesign_alloc"
@@ -113,6 +114,86 @@ static SecurityManager *_certManager = nil;
     const void *searchKeys[] = {
         kSecClass, //type of keychain item to search for
         kSecMatchSubjectStartsWith,//search on subject
+        kSecReturnRef,//return seccertref of properties
+        kSecMatchValidOnDate, //valid for current date
+        kSecMatchLimit//search limit
+    };
+    
+    const void *searchVals[] = {
+        kSecClassCertificate,
+        subjectNameRef,
+        kCFBooleanTrue,
+        kCFNull,
+        kSecMatchLimitAll
+    };
+    
+    
+    CFDictionaryRef dictRef=
+    CFDictionaryCreate(kCFAllocatorDefault,
+                       searchKeys,
+                       searchVals,
+                       valCount,
+                       &kCFTypeDictionaryKeyCallBacks,
+                       &kCFTypeDictionaryValueCallBacks);
+    
+    
+    //if the status is OK, lets put the results
+    //into the NSArray
+    OSStatus status = SecItemCopyMatching(dictRef, &searchResultsRef);
+    if (status) {
+        
+        NSLog(@"Failed the query: %@!", SecCopyErrorMessageString(status, NULL));
+    } else {
+        NSArray *searchResults = [NSMutableArray arrayWithArray: (__bridge NSArray *) searchResultsRef];
+        
+        //        CertificateModel *curModel;
+        //        for (NSDictionary *curDict in searchResults) {
+        //            curModel = [[CertificateModel alloc] initWithCertificateData:curDict];
+        //            [certList addObject:curModel];
+        //        }
+        SecCertificateRef curCertRef;
+        for (int i = 0; i < searchResults.count; i++) {
+            curCertRef = (__bridge SecCertificateRef)[searchResults objectAtIndex:i];
+            CFDataRef certData = SecCertificateCopyData(curCertRef);
+            
+            
+            CFStringRef certSummary = SecCertificateCopySubjectSummary(curCertRef);
+            NSLog(@"%@", certSummary);
+            
+            NSMutableString *s = [NSMutableString string];
+            const UInt8 *p = CFDataGetBytePtr(certData);
+            unsigned char digest[CC_SHA1_DIGEST_LENGTH];
+            if (CC_SHA1(p, (CC_LONG)CFDataGetLength(certData), digest)) {
+                NSLog(@"The hash worked: %ld", CFDataGetLength(certData));
+                CFDataRef hashData = CFDataCreate(NULL, digest, sizeof(digest));
+                for (int j = 0; j < CC_SHA1_DIGEST_LENGTH; j++) {
+                    [s appendFormat:@"%02x", *p];
+                    p++;
+                }
+            }
+            //, CFDataGetLength(certData)
+            
+        }
+    }
+    
+    if (dictRef) CFRelease(dictRef);
+    
+    //save certificate list for later retrieval
+    _certificateList = [[NSArray alloc] initWithArray:certList];
+    
+    return _certificateList;
+}
+
+- (NSArray *)getDistributionCertificatesListadf {
+    NSMutableArray *certList = [NSMutableArray array];
+    CFTypeRef searchResultsRef;
+    const char *subjectName = kSecurityManagerSubjectNameUTF8CStr;
+    CFStringRef subjectNameRef = CFStringCreateWithCString(NULL, subjectName,CFStringGetSystemEncoding());
+    CFIndex valCount = 5;
+    
+    const void *searchKeys[] = {
+        kSecClass, //type of keychain item to search for
+        kSecMatchSubjectStartsWith,//search on subject
         kSecReturnAttributes,//return dictionary of properties
         kSecMatchValidOnDate, //valid for current date
         kSecMatchLimit//search limit
@@ -154,7 +235,10 @@ static SecurityManager *_certManager = nil;
     
     if (dictRef) CFRelease(dictRef);
     
-    return [NSArray arrayWithArray:certList];
+    //save certificate list for later retrieval
+    _certificateList = [[NSArray alloc] initWithArray:certList];
+    
+    return _certificateList;
 }
 
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message {
@@ -303,7 +387,7 @@ static SecurityManager *_certManager = nil;
     NSInteger codeSignReturnCode = [codeSignTask terminationStatus];
     if (codeSignReturnCode) {
         [self postNotifcation:kSecurityManagerNotificationEventError
-                  withMessage:[NSString stringWithFormat:@"FAILURE: %@", codesignOutput]];
+                  withMessage:[NSString stringWithFormat:@"codesign failure: %@", codesignOutput]];
         return;
     }
     

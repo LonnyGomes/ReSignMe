@@ -21,12 +21,36 @@
 //  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "CertificateModel.h"
+#include <CommonCrypto/CommonDigest.h>
 
 @implementation CertificateModel
 - (id)initWithCertificateData:(NSDictionary *)certData {
     self = [super init];
     if (self) {
         self.label = [certData objectForKey:@"labl"];
+        NSData *data =  [NSData dataWithData:[certData objectForKey:@"issr"]];
+        
+//        //build hex string from cert data
+//        NSMutableString *hexStr = [NSMutableString string];
+//        const unsigned char *c = data.bytes;
+//        for (int idx = 0; idx < data.length; idx++) {
+//            [hexStr appendFormat:@"%02x", *c];
+//            c++;
+//        }
+        
+        NSMutableString *shaHash = [NSMutableString string];
+        unsigned char shaDigest[CC_SHA1_DIGEST_LENGTH];
+        if (CC_SHA1(data.bytes, (unsigned int)data.length, shaDigest)) {
+            NSLog(@"got hash");
+            
+            const unsigned char *ptr = shaDigest;
+            for (int i = 0; i < CC_SHA1_DIGEST_LENGTH; i++) {
+                [shaHash appendFormat:@"%02x", shaDigest[i]];
+                //ptr++;
+            }
+        }
+        
+        self.keyHash = shaHash;
     }
     
     return self;

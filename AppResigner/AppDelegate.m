@@ -239,7 +239,7 @@
         [self scrollToBottom];
         NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
-                            @"The following error occurred when attempting to re-sign '%@':\n\n%@",
+                            @"The following error occurred when\nattempting to re-sign '%@':\n\n%@",
                                 [self.dropView.selectedIPA lastPathComponent], message],
                         nil, nil, nil);
     }
@@ -283,7 +283,9 @@
                         nil, nil, nil);
     } else {
         [self setupDragState:DragStateReSign];
-        NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
+        //get accompaning hash for selected certificate
+        CertificateModel *certModel = [self.sm.certificateList objectAtIndex:self.certPopDownBtn.indexOfSelectedItem];
+        NSString *selectedIdentity = certModel.keyHash;
         NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
