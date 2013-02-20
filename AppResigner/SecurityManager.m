@@ -29,7 +29,6 @@
 #define kCmdZip @"/usr/bin/zip"
 #define kCmdUnzip @"/usr/bin/unzip"
 #define kCmdMkTemp @"/usr/bin/mktemp"
-#define kCmdCp @"/bin/cp"
 #define kCmdRm @"/bin/rm"
 
 #define kSecurityManagerBaseCdmCodeSign @"codesign"
@@ -46,6 +45,7 @@
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
 - (NSURL *)genTempPath;
+- (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
 - (NSString *)cleanPath:(NSURL *)path;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
 @end
@@ -180,6 +180,21 @@ static SecurityManager *_certManager = nil;
     return [NSURL URLWithString:tmpPath];
 }
 
+- (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl {
+    BOOL wasSuccess = YES;
+    
+    NSError *copyError;
+    [[NSFileManager defaultManager] copyItemAtPath:srcUrl.path toPath:destUrl.path error:&copyError];
+    
+    if (copyError) {
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:[NSString stringWithFormat:@"Copy error: %@!\n", [copyError localizedDescription]]];
+        wasSuccess = NO;
+    }
+    
+    return wasSuccess;
+}
+
 - (NSString *)cleanPath:(NSURL *)pathURL {
     //NSString *str = [[pathURL path] stringByReplacingOccurrencesOfString:@" " withString:@"\\ "];
     NSString *str = [NSString stringWithFormat:@"\"%@\"", pathURL.path];
@@ -207,24 +222,12 @@ static SecurityManager *_certManager = nil;
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Copying %@ to %@", ipaName, [tmpPathURL path]]];
     
-    NSTask *cpAppTask = [[NSTask alloc] init];
-    [cpAppTask setLaunchPath:kCmdCp];
-    NSString *cleanAppPath = [self cleanPath:appPathURL];
-    NSString *cleanTmpPath = [self cleanPath:tmpPathURL];
-    
-    [cpAppTask setArguments:@[cleanAppPath, cleanTmpPath]];
-
-    [cpAppTask launch];
-    [cpAppTask waitUntilExit];
-    
-    //NSLog (@"%@ %@ %@",kCmdCp,cleanAppPath, cleanTmpPath  );
-    int status = [cpAppTask terminationStatus];
-    if (status) {
+    if (![self copyIpaBundleWithSrcURL:appPathURL destinationURL:[tmpPathURL URLByAppendingPathComponent:ipaName]]) {
         NSLog(@"Could not copy ipa over!");
-        [self postNotifcation:kSecurityManagerNotificationEventError
-                  withMessage:[NSString stringWithFormat:@"Failed to copy %@ to %@!", cleanAppPath, cleanTmpPath]];
+        
         return;
     }
+    
     
     //set location of the copied IPA so we can unzip it
     NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:ipaName];
