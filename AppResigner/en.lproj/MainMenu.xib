@@ -759,7 +759,7 @@
 				<int key="NSWindowBacking">2</int>
 				<string key="NSWindowRect">{{335, 390}, {618, 494}}</string>
 				<int key="NSWTFlags">1954021376</int>
-				<string key="NSWindowTitle">AppResigner</string>
+				<string key="NSWindowTitle">App Re-Signer</string>
 				<string key="NSWindowClass">NSWindow</string>
 				<nil key="NSViewClass"/>
 				<nil key="NSUserInterfaceItemIdentifier"/>

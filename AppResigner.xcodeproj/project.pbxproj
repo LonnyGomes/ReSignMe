@@ -452,7 +452,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "App Re-Signer";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -464,7 +464,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = "App Re-Signer";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
