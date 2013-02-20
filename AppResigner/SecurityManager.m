@@ -46,6 +46,7 @@
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
 - (NSURL *)genTempPath;
+- (NSString *)cleanPath:(NSURL *)path;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
 @end
 
@@ -179,6 +180,12 @@ static SecurityManager *_certManager = nil;
     return [NSURL URLWithString:tmpPath];
 }
 
+- (NSString *)cleanPath:(NSURL *)pathURL {
+    //NSString *str = [[pathURL path] stringByReplacingOccurrencesOfString:@" " withString:@"\\ "];
+    NSString *str = [NSString stringWithFormat:@"\"%@\"", pathURL.path];
+    return str;
+}
+
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
@@ -202,10 +209,11 @@ static SecurityManager *_certManager = nil;
     
     NSTask *cpAppTask = [[NSTask alloc] init];
     [cpAppTask setLaunchPath:kCmdCp];
-    NSString *cleanAppPath = [NSString stringWithFormat:@"%@", [appPathURL path]];
-    NSString *cleanTmpPath = [NSString stringWithFormat:@"%@", [tmpPathURL path]];
-    [cpAppTask setArguments:@[cleanAppPath, cleanTmpPath]];
+    NSString *cleanAppPath = [self cleanPath:appPathURL];
+    NSString *cleanTmpPath = [self cleanPath:tmpPathURL];
     
+    [cpAppTask setArguments:@[cleanAppPath, cleanTmpPath]];
+
     [cpAppTask launch];
     [cpAppTask waitUntilExit];
     

@@ -284,8 +284,8 @@
     } else {
         [self setupDragState:DragStateReSign];
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
-        NSURL *appURL = [NSURL URLWithString:self.dropView.selectedIPA];
-        NSURL *outputURL = [NSURL URLWithString:self.pathTextField.stringValue];
+        NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+        NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
     }
 }
