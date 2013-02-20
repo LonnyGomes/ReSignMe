@@ -55,7 +55,7 @@
 		07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInfoViewController.m; sourceTree = "<group>"; };
 		07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppInfoViewController.xib; sourceTree = "<group>"; };
 		07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesIpaIcon.png; sourceTree = "<group>"; };
-		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = AppResigner.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FE869516C7271A00AC4D31 /* AppResigner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = AppResigner.app; path = "App Re-Signer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		07FE869C16C7271A00AC4D31 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
