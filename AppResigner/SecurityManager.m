@@ -45,7 +45,7 @@
 @interface SecurityManager()
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
-
+- (NSURL *)genTempPath;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
 @end
 
@@ -160,6 +160,25 @@ static SecurityManager *_certManager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:type object:self userInfo:[NSDictionary dictionaryWithObject:message forKey:kSecurityManagerNotificationKey]];
 }
 
+- (NSURL *)genTempPath {
+    NSFileHandle *file;
+    NSPipe *pipe = [NSPipe pipe];
+    
+    NSTask *mktmpTask = [[NSTask alloc] init];
+    [mktmpTask setLaunchPath:kCmdMkTemp];
+    [mktmpTask setArguments:@[@"-d", kSecurityManagerTmpFileTemplate]];
+    
+    [mktmpTask setStandardOutput:pipe];
+    file = [pipe fileHandleForReading];
+    
+    [mktmpTask launch];
+    [mktmpTask waitUntilExit];
+
+    NSString *tmpPath = [[[NSString alloc] initWithData: [file readDataToEndOfFile] encoding: NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\n"  withString:@""];
+    
+    return [NSURL URLWithString:tmpPath];
+}
+
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
@@ -171,18 +190,8 @@ static SecurityManager *_certManager = nil;
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:@"Initializing re-signing process ..."];
     
-    NSTask *mktmpTask = [[NSTask alloc] init];
-    [mktmpTask setLaunchPath:kCmdMkTemp];
-    [mktmpTask setArguments:@[@"-d", kSecurityManagerTmpFileTemplate]];
-
-    [mktmpTask setStandardOutput:pipe];
-    file = [pipe fileHandleForReading];
     
-    [mktmpTask launch];
-    [mktmpTask waitUntilExit];
-    
-    NSString *tmpPath = [[[NSString alloc] initWithData: [file readDataToEndOfFile] encoding: NSUTF8StringEncoding] stringByReplacingOccurrencesOfString:@"\n"  withString:@""];
-    NSURL *tmpPathURL = [NSURL URLWithString:tmpPath];
+    NSURL *tmpPathURL = [self genTempPath];
     
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Created temp directory: %@", [tmpPathURL path]]];

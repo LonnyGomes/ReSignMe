@@ -180,7 +180,7 @@
     //update the user defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [defaults setObject:self.pathTextField.stringValue forKey:kAppDefaultsOutputDir];
+    [defaults setObject:[pathURL path] forKey:kAppDefaultsOutputDir];
 }
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {
