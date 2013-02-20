@@ -175,12 +175,17 @@
 
 - (void)setOutputPathURL:(NSURL *)pathURL {
     _outputPathURL = pathURL;
-    [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
     
     //update the user defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    [defaults setObject:[pathURL path] forKey:kAppDefaultsOutputDir];
+    if (pathURL) {
+        [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
+        [defaults setObject:[_outputPathURL path] forKey:kAppDefaultsOutputDir];
+    } else {
+        [self.pathTextField setStringValue:@""];
+        [defaults setObject:@"" forKey:kAppDefaultsOutputDir];
+    }
 }
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {

@@ -210,10 +210,11 @@ static SecurityManager *_certManager = nil;
     [cpAppTask waitUntilExit];
     
     //NSLog (@"%@ %@ %@",kCmdCp,cleanAppPath, cleanTmpPath  );
-    int status;
-    if ( (status = [cpAppTask terminationStatus]) != 0) {
-        //TODO:HANDLE BETTER
+    int status = [cpAppTask terminationStatus];
+    if (status) {
         NSLog(@"Could not copy ipa over!");
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:[NSString stringWithFormat:@"Failed to copy %@ to %@!", cleanAppPath, cleanTmpPath]];
         return;
     }
     
@@ -247,7 +248,9 @@ static SecurityManager *_certManager = nil;
     
     if (payloadError) {
         NSLog(@"Could not open: %@", [payloadPathURL path]);
-        //TODO: Handle errors
+        
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:[NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath]];
         return;
     } else if (payloadPathContents.count != 1) {
         NSLog(@"Unexpected output in Payloads directory of the IPA!");
@@ -309,6 +312,13 @@ static SecurityManager *_certManager = nil;
     
     [zipTask launch];
     [zipTask waitUntilExit];
+    
+    NSInteger zipReturnCode = [zipTask terminationStatus];
+    if (zipReturnCode) {
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:[NSString stringWithFormat:@"zip failed to package %@", zipOutputPath]];
+        return;
+    }
     
     [self postNotifcation:kSecurityManagerNotificationEventComplete withMessage:[NSString stringWithFormat:@"The ipa has been successuflly re-signed and is named '%@'", resignedAppName]];
     
