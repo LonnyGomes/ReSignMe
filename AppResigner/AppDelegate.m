@@ -179,9 +179,12 @@
     //update the user defaults
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
-    if (pathURL) {
-        [self.pathTextField setStringValue:[_outputPathURL.path stringByExpandingTildeInPath]];
-        [defaults setObject:[_outputPathURL path] forKey:kAppDefaultsOutputDir];
+    NSString *newOutputPath = [_outputPathURL.path stringByExpandingTildeInPath];
+    
+    if (newOutputPath && ![newOutputPath isEqual:@""]) {
+        
+        [self.pathTextField setStringValue:newOutputPath];
+        [defaults setObject:newOutputPath forKey:kAppDefaultsOutputDir];
     } else {
         [self.pathTextField setStringValue:@""];
         [defaults setObject:@"" forKey:kAppDefaultsOutputDir];
