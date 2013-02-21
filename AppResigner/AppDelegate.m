@@ -84,7 +84,7 @@
     
     NSString *outputPath = [defaults stringForKey:kAppDefaultsOutputDir];
     if (outputPath) {
-        self.outputPathURL = [NSURL URLWithString:outputPath];
+        self.outputPathURL = [NSURL URLWithString:[outputPath stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
     } else {
         self.outputPathURL = kAppResignerDefaultOutputURL;
     }
@@ -297,6 +297,25 @@
     self.dropView.selectedIPA = nil;
     self.statusTextView.string = @"";
     [self setupDragState:DragStateInital];
+}
+
+- (IBAction)openMenuItemInvoked:(id)sender {
+    NSOpenPanel* openDlg = [NSOpenPanel openPanel];
+    
+    openDlg.canChooseDirectories = NO;
+    openDlg.canChooseFiles = YES;
+    openDlg.canCreateDirectories = NO;
+    openDlg.allowsMultipleSelection = NO;
+    openDlg.allowedFileTypes = @[@"ipa"];
+    
+    if ( [openDlg runModal] == NSOKButton ) {
+        //NSURL *escapedURL = [openDlg.URL urlby]
+        self.dropView.selectedIPA = openDlg.URL.path;
+        [self setupDragState:DragStateAppSelected];
+    
+        [self.appInfoVC loadIpaFile:openDlg.URL];
+    }
+
 }
 
 #pragma mark - AppDropView delegate methods

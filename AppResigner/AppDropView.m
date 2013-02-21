@@ -46,7 +46,7 @@
 
 #pragma mark - ipa valididy checks
 - (BOOL)isValidForFileAtPath:(NSString *)path {
-    if ([path hasSuffix:@".ipa"]) {
+    if ([path hasSuffix:@"ipa"]) {
         return YES;
     }
     
