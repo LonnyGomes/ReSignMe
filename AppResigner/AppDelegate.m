@@ -242,7 +242,7 @@
         [self scrollToBottom];
         NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
-                            @"The following error occurred when attempting to re-sign '%@':\n\n%@",
+                            @"The following error occurred when attempting to\nre-sign '%@':\n\n%@",
                                 [self.dropView.selectedIPA lastPathComponent], message],
                         nil, nil, nil);
     }
@@ -306,10 +306,9 @@
     openDlg.canChooseFiles = YES;
     openDlg.canCreateDirectories = NO;
     openDlg.allowsMultipleSelection = NO;
-    openDlg.allowedFileTypes = @[@"ipa"];
+    openDlg.allowedFileTypes = @[@"ipa"]; //TODO: shouldn't be hardcoded
     
     if ( [openDlg runModal] == NSOKButton ) {
-        //NSURL *escapedURL = [openDlg.URL urlby]
         self.dropView.selectedIPA = openDlg.URL.path;
         [self setupDragState:DragStateAppSelected];
     
