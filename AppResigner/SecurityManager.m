@@ -45,6 +45,7 @@
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
 - (NSURL *)genTempPath;
+- (BOOL)purgeTempFolderAtPath:(NSURL *)tmpPathURL;
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
 - (NSString *)cleanPath:(NSURL *)path;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
@@ -180,6 +181,32 @@ static SecurityManager *_certManager = nil;
     return [NSURL URLWithString:tmpPath];
 }
 
+- (BOOL)purgeTempFolderAtPath:(NSURL *)tmpPathURL {
+    
+    [self postNotifcation:kSecurityManagerNotificationEvent withMessage:@"Purging temporary path ...." ];
+    
+    dispatch_group_t group_queue = dispatch_group_create();
+    
+    __block BOOL wasSuccess = YES;
+    dispatch_group_async(group_queue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^ {
+        NSError *err;
+        NSString *tmpPath = [tmpPathURL path];
+        [[NSFileManager defaultManager] removeItemAtPath:tmpPath error:&err];
+        
+        if (err) {
+            [self postNotifcation:kSecurityManagerNotificationEventError
+                      withMessage:[NSString stringWithFormat:@"Failed to purge temporary path because of following reason: %@", err.localizedDescription]];
+            wasSuccess = NO;
+        }
+    });
+    
+    dispatch_group_wait(group_queue, DISPATCH_TIME_FOREVER);
+    
+    dispatch_release(group_queue);
+    
+    return wasSuccess;
+}
+
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl {
     BOOL wasSuccess = YES;
     
@@ -222,9 +249,9 @@ static SecurityManager *_certManager = nil;
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Copying %@ to %@", ipaName, [tmpPathURL path]]];
     
+    //TODO:add group queue!
     if (![self copyIpaBundleWithSrcURL:appPathURL destinationURL:[tmpPathURL URLByAppendingPathComponent:ipaName]]) {
-        NSLog(@"Could not copy ipa over!");
-        
+        [self purgeTempFolderAtPath:tmpPathURL];
         return;
     }
     
@@ -262,10 +289,13 @@ static SecurityManager *_certManager = nil;
         
         [self postNotifcation:kSecurityManagerNotificationEventError
                   withMessage:[NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath]];
+        [self purgeTempFolderAtPath:tmpPathURL];
         return;
     } else if (payloadPathContents.count != 1) {
-        NSLog(@"Unexpected output in Payloads directory of the IPA!");
-        //TODO: handle errors
+        [self postNotifcation:kSecurityManagerNotificationEventError
+                  withMessage:@"Unexpected output in Payloads directory of the IPA!"];
+        
+        [self purgeTempFolderAtPath:tmpPathURL];
         return;
     }
     
@@ -304,6 +334,8 @@ static SecurityManager *_certManager = nil;
     if (codeSignReturnCode) {
         [self postNotifcation:kSecurityManagerNotificationEventError
                   withMessage:[NSString stringWithFormat:@"FAILURE: %@", codesignOutput]];
+        
+        [self purgeTempFolderAtPath:tmpPathURL];
         return;
     }
     
@@ -328,10 +360,15 @@ static SecurityManager *_certManager = nil;
     if (zipReturnCode) {
         [self postNotifcation:kSecurityManagerNotificationEventError
                   withMessage:[NSString stringWithFormat:@"zip failed to package %@", zipOutputPath]];
+        
+        [self purgeTempFolderAtPath:tmpPathURL];
         return;
     }
     
-    [self postNotifcation:kSecurityManagerNotificationEventComplete withMessage:[NSString stringWithFormat:@"The ipa has been successuflly re-signed and is named '%@'", resignedAppName]];
+    if ([self purgeTempFolderAtPath:tmpPathURL]) {
+        [self postNotifcation:kSecurityManagerNotificationEvent withMessage:@"App re-sign process successfully completed!"];
+        [self postNotifcation:kSecurityManagerNotificationEventComplete withMessage:[NSString stringWithFormat:@"The ipa has been successuflly re-signed and is named '%@'", resignedAppName]];
+    }
     
 }
 
