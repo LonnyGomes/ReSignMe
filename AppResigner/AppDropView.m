@@ -150,10 +150,11 @@
     CGContextRef context = (CGContextRef)([[NSGraphicsContext currentContext] graphicsPort]);
     
     NSColor *clr = (self.isValidFile) ? HOVER_CLR_VALID : HOVER_CLR_INVALID;
-    CGColorRef hoverClr = clr.CGColor;
+    CGColorRef hoverClr = CGColorCreateGenericRGB(clr.redComponent, clr.greenComponent, clr.blueComponent, clr.alphaComponent);
     
     CGContextSetFillColorWithColor(context, hoverClr);
     CGContextFillRect(context, self.bounds);
+    CGColorRelease(hoverClr);
 }
 
 @end
