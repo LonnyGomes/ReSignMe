@@ -24,7 +24,7 @@
 #import "AppDropView.h"
 @interface AppDropView()
 - (BOOL)isValidForFileAtPath:(NSString *)path;
-- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender;
+- (NSArray *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender;
 @property (nonatomic, assign) BOOL isValidFile;
 @end
 
@@ -53,15 +53,22 @@
     return NO;
 }
 
-- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender {
-    NSString *path = nil;
+- (NSArray *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender {
+    NSArray *paths = nil;
     NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+    NSMutableArray *validFiles = [NSMutableArray array];
+    
+    for (NSString *curFilename in filenames) {
+        if ([self isValidForFileAtPath:curFilename]) {
+            [validFiles addObject:curFilename];
+        }
+    }
     //For now, just handle one file
     if (filenames.count > 0) {
-        path = [filenames objectAtIndex:0];
+        paths = [NSArray arrayWithArray:validFiles];
     }
     
-    return path;
+    return paths;
 }
 
 #pragma mark - cursor methods
@@ -80,9 +87,12 @@
 
 #pragma mark - drag protocol methods
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
-    NSString *path = [self getFilenameFromPasteBoard:sender];
+    NSArray *paths = [self getFilenameFromPasteBoard:sender];
     self.isInDragState = YES;
-    self.isValidFile = [self isValidForFileAtPath:path];
+
+    //if we have at least one value, the drag is valid
+    self.isValidFile = (paths.count) ? YES : NO;
+    
     [self setNeedsDisplay:YES];
     [self activateDragCursor];
     return NSDragOperationGeneric;
@@ -112,9 +122,9 @@
 }
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
-    NSString *path = [self getFilenameFromPasteBoard:sender];
+    NSArray *paths = [self getFilenameFromPasteBoard:sender];
    
-    if ([self isValidForFileAtPath:path]) {
+    if (paths.count) {
         return YES;
     } else {
         self.isInDragState = NO;
@@ -125,7 +135,7 @@
         NSRunAlertPanel(@"Invalid file", @"Please select an ipa. It can be dragged into the application.", nil, nil, nil);
         
         if (self.delegate) {
-            [self.delegate performSelector:@selector(appDropView:invalidFileWasDraggedIntoView:) withObject:self withObject:path];
+            [self.delegate performSelector:@selector(appDropView:invalidFileWasDraggedIntoView:) withObject:self withObject:nil];
         }
         return NO;
     }    
@@ -136,7 +146,9 @@
     self.isInDragState = NO;
     [self setNeedsDisplay:YES];
     
-    self.selectedIPA = [self getFilenameFromPasteBoard:sender];
+    //TODO: handle multiple files
+    NSArray *paths  = [self getFilenameFromPasteBoard:sender];
+    self.selectedIPA = [paths objectAtIndex:0];
     
     if (self.delegate && self.selectedIPA) {
         NSURL *ipaURL = [NSURL URLWithString:[self.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
