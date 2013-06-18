@@ -31,6 +31,11 @@
 #define kSecurityManagerSubjectNameUTF8CStr "iPhone Distribution:"
 #define kSecurityManagerXcodeBundleName @"com.apple.dt.Xcode"
 
+//options used for security manager
+#define kSecurityManagerOptionsVerboseOutput 1
+
+#define OPTION_IS_VERBOSE(flags) (flags & 1)
+
 typedef NSString SMNotificationType;
 
 @interface SecurityManager : NSObject
@@ -38,4 +43,5 @@ typedef NSString SMNotificationType;
 - (BOOL)setupDependencies;
 - (NSArray *)getDistributionCertificatesList;
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL;
+- (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags;
 @end

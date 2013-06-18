@@ -28,6 +28,7 @@
 @interface AppDelegate()
 - (void)scrollToBottom;
 @property (nonatomic, strong) SecurityManager *sm;
+@property (nonatomic, assign) BOOL isVerboseOutput;
 @end
 
 @implementation AppDelegate
@@ -224,19 +225,23 @@
 #pragma mark - Security Manager Notifcation selectors
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
+    NSAttributedString *messageAttrb =
+        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"]];
+    
     //NSLog(@"Got notification:%@", message);
     //TODO:based on the notification type, format the text
     
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
+        //TODO: format differently for output of commands
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
         NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", nil, nil, nil);
         [self setupDragState:DragStateReSignComplete];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
-        NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length, message.length);
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
+        NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
         [self setupDragState:DragStateRecoverableError];
         [self scrollToBottom];
@@ -289,7 +294,14 @@
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
         NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
+        
+        
+        NSInteger options = 0;
+        if (self.isVerboseOutput) {
+            options |= kSecurityManagerOptionsVerboseOutput;
+        }
+        
+        [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
     }
 }
 
@@ -315,6 +327,16 @@
         [self.appInfoVC loadIpaFile:openDlg.URL];
     }
 
+}
+
+- (IBAction)verboseOptionMenuItemInvoked:(id)sender {
+    
+    NSMenuItem *menuItem = (NSMenuItem *)sender;
+
+    //toggle verbose state and store it's value
+    self.isVerboseOutput = (menuItem.state+1) % 2;
+
+    [menuItem setState:self.isVerboseOutput];
 }
 
 #pragma mark - AppDropView delegate methods

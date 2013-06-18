@@ -103,8 +103,6 @@
 		0708D7F416C9C4CC009748EF /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
-				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
 				07E0CB9516C75F1B005E6C6A /* CertificateModel.h */,
 				07E0CB9616C75F1B005E6C6A /* CertificateModel.m */,
 			);
@@ -166,6 +164,8 @@
 			children = (
 				07F8E6B116CC504700B7090A /* Assets */,
 				0708D7F416C9C4CC009748EF /* Models */,
+				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
+				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
 				07E3D7E716CDC1810084F838 /* AppUserDefaults.h */,
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,

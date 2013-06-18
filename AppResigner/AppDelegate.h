@@ -56,6 +56,8 @@ typedef enum {
 - (IBAction)reSignBtnPressed:(id)sender;
 - (IBAction)doneBtnPressed:(id)sender;
 - (IBAction)openMenuItemInvoked:(id)sender;
+- (IBAction)verboseOptionMenuItemInvoked:(id)sender;
+
 
 //Interface builder properties
 @property (assign) IBOutlet NSWindow *window;

@@ -29,7 +29,6 @@
 #define kCmdZip @"/usr/bin/zip"
 #define kCmdUnzip @"/usr/bin/unzip"
 #define kCmdMkTemp @"/usr/bin/mktemp"
-#define kCmdRm @"/bin/rm"
 
 #define kSecurityManagerBaseCdmCodeSign @"codesign"
 #define kSecurityManagerBaseCdmCodeSignAllocate @"codesign_allocate"
@@ -39,7 +38,7 @@
 #define kSecurityManagerWorkingSubDir @"dump"
 #define kSecurityManagerPayloadDir @"Payload"
 #define kSecurityManagerResourcesPlistDir @"ResourceRules.plist"
-#define kSecurityManagerRenameStr @"_renamed"
+#define kSecurityManagerRenameStr @"_reSigned"
 
 @interface SecurityManager()
 @property (nonatomic, strong) NSString *pathForCodesign;
@@ -229,8 +228,15 @@ static SecurityManager *_certManager = nil;
 }
 
 - (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
+    [self signAppWithIdenity:identity appPath:appPathURL outputPath:outputPathURL options:0];
+}
+
+- (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
+    
+    //parse option flags
+    BOOL isVerboseOutput = OPTION_IS_VERBOSE(optionFlags);
     
     //retrieve the ipa name
     NSString *ipaName = [appPathURL lastPathComponent];
@@ -242,12 +248,14 @@ static SecurityManager *_certManager = nil;
     
     NSURL *tmpPathURL = [self genTempPath];
     
-    [self postNotifcation:kSecurityManagerNotificationEvent
+    if (isVerboseOutput) {
+        [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Created temp directory: %@", [tmpPathURL path]]];
     
-    //copy the ipa over to the temp folder
-    [self postNotifcation:kSecurityManagerNotificationEvent
+        //copy the ipa over to the temp folder
+        [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Copying %@ to %@", ipaName, [tmpPathURL path]]];
+    }
     
     //TODO:add group queue!
     if (![self copyIpaBundleWithSrcURL:appPathURL destinationURL:[tmpPathURL URLByAppendingPathComponent:ipaName]]) {
@@ -260,15 +268,25 @@ static SecurityManager *_certManager = nil;
     NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:ipaName];
     NSURL *tempIpaDstPath = [tmpPathURL URLByAppendingPathComponent:kSecurityManagerWorkingSubDir];
     
-    [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Unziping %@ to %@ ...", ipaName, [tmpPathURL path]]];
+    if (isVerboseOutput) {
+        [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Uncompressing %@ to %@ ...", ipaName, [tmpPathURL path]]];
+    } else {
+        [self postNotifcation:kSecurityManagerNotificationEvent
+                  withMessage:[NSString stringWithFormat:@"Uncompressing %@ ...", ipaName]];
+        
+    }
+    
     //now unzip the contents of the ipa to prepare for resigning
     NSTask *unzipTask = [[NSTask alloc] init];
     pipe = [NSPipe pipe];
     file = [pipe fileHandleForReading];
     
-    [unzipTask setStandardOutput:pipe];
+    if (isVerboseOutput) {
+        [unzipTask setStandardOutput:pipe];
+    }
     [unzipTask setStandardError:pipe];
+    
     [unzipTask setLaunchPath:kCmdUnzip];
     [unzipTask setArguments:@[[tempIpaSrcPath path], @"-d", [tempIpaDstPath path]]];
     [unzipTask launch];
