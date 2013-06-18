@@ -27,6 +27,7 @@
 
 @interface AppDelegate()
 - (void)scrollToBottom;
+- (void)displayNoValidCertError;
 @property (nonatomic, strong) SecurityManager *sm;
 @property (nonatomic, assign) BOOL isVerboseOutput;
 @property (nonatomic, assign) BOOL isShowingDevCerts;
@@ -45,7 +46,7 @@
     //clear all default entries
     [self.certPopDownBtn removeAllItems];
     
-    //ensure security manager stars w/o dependency problems
+    //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
     if (!self.sm) {
         [self setupDragState:DragStateFatalError];
@@ -57,19 +58,16 @@
         return;
     }
     
-   
-    
-    if ([self populateCertPopDown:[self.sm getDistributionCertificatesList]]) {
+    //load user defaults before going any further
+    [self loadUserDefaults];
+
+    //load appropriate cert list
+    if ([self populateCertPopDown:self.isShowingDevCerts ? self.sm.getDistributionAndDevCertificatesList : self.sm.getDistributionCertificatesList]) {
         [self setupDragState:DragStateInital];
-        [self loadUserDefaults];
+        
         [self registerForNotifications];
     } else {
-        [self setupDragState:DragStateFatalError];
-         NSRunAlertPanel(@"Certificate Error",
-            @"No valid certificates were found!\n"
-            "Please install a distribution certificate using the 'Keychain Access' tool.\n\n"
-            "The Keychain Access tool can be found in Applications -> Utilities\n\n"
-            "A certificate is needed to resign your apps!", nil, nil, nil);
+        [self displayNoValidCertError];
     }
 }
 
@@ -229,6 +227,17 @@
     
 }
 
+#pragma mark - Error popup methods
+- (void)displayNoValidCertError {
+    [self setupDragState:DragStateFatalError];
+    NSRunAlertPanel(@"Certificate Error",
+                    @"No valid certificates were found!\n"
+                    "Please install a distribution certificate using the 'Keychain Access' tool.\n\n"
+                    "The Keychain Access tool can be found in Applications -> Utilities\n\n"
+                    "A certificate is needed to resign your apps!", nil, nil, nil);
+    
+}
+
 #pragma mark - Security Manager Notifcation selectors
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
@@ -356,10 +365,15 @@
     [defaults setBool:self.isShowingDevCerts forKey:kAppDefaultsShowDevCerts];
     
     //re-populate the pop-down based on the the user's selection
+    BOOL wasSuccess = NO;
     if (self.isShowingDevCerts) {
-        [self populateCertPopDown:self.sm.getDistributionAndDevCertificatesList];
+        wasSuccess = [self populateCertPopDown:self.sm.getDistributionAndDevCertificatesList];
     } else {
-        [self populateCertPopDown:self.sm.getDistributionCertificatesList];
+        wasSuccess = [self populateCertPopDown:self.sm.getDistributionCertificatesList];
+    }
+    
+    if (!wasSuccess) {
+        [self displayNoValidCertError];
     }
 }
 
