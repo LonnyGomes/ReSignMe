@@ -10,6 +10,7 @@
 #define AppResigner_AppUserDefaults_h
 
 #define kAppDefaultsOutputDir @"appOutputDir"
+#define kAppDefaultsShowDevCerts @"showDevCertificates"
 
 
 #endif

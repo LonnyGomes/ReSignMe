@@ -29,6 +29,7 @@
 - (void)scrollToBottom;
 @property (nonatomic, strong) SecurityManager *sm;
 @property (nonatomic, assign) BOOL isVerboseOutput;
+@property (nonatomic, assign) BOOL isShowingDevCerts;
 @end
 
 @implementation AppDelegate
@@ -89,6 +90,9 @@
     } else {
         self.outputPathURL = kAppResignerDefaultOutputURL;
     }
+    
+    self.isShowingDevCerts = [defaults boolForKey:kAppDefaultsShowDevCerts];
+    [self.showDevCertsMenuItem setState:self.isShowingDevCerts];
 }
 
 - (void)setupDragState:(DragState)dragState {
@@ -194,7 +198,10 @@
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {
     BOOL wasSuccess = YES;
+    //remove any existing models
+    [self.certPopDownBtn removeAllItems];
     
+    //loop through all cert models and add them into the pop down
     for (CertificateModel *curModel in certModels) {
         [self.certPopDownBtn addItemWithTitle:curModel.label];
     }
@@ -337,6 +344,23 @@
     self.isVerboseOutput = (menuItem.state+1) % 2;
 
     [menuItem setState:self.isVerboseOutput];
+}
+
+- (IBAction)showDevCertsMenuItemInvoked:(id)sender {
+    //toggle state and update menu item
+    self.isShowingDevCerts = (self.showDevCertsMenuItem.state + 1) % 2;
+    [self.showDevCertsMenuItem setState:self.isShowingDevCerts];
+    
+    //store the new state in the user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.isShowingDevCerts forKey:kAppDefaultsShowDevCerts];
+    
+    //re-populate the pop-down based on the the user's selection
+    if (self.isShowingDevCerts) {
+        [self populateCertPopDown:self.sm.getDistributionAndDevCertificatesList];
+    } else {
+        [self populateCertPopDown:self.sm.getDistributionCertificatesList];
+    }
 }
 
 #pragma mark - AppDropView delegate methods

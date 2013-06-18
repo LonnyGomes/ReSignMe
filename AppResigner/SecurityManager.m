@@ -43,6 +43,7 @@
 @interface SecurityManager()
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
+- (NSArray *)getDistributionCertificatesListWithDevCerts:(BOOL)willShowDevCerts;
 - (NSURL *)genTempPath;
 - (BOOL)purgeTempFolderAtPath:(NSURL *)tmpPathURL;
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
@@ -103,10 +104,22 @@ static SecurityManager *_certManager = nil;
     return (self.pathForCodesign && self.pathForCodesignAlloc);
 }
 
+- (NSArray *)getDistributionAndDevCertificatesList {
+    return  [self getDistributionCertificatesListWithDevCerts:YES];
+}
+
 - (NSArray *)getDistributionCertificatesList {
+    return [self getDistributionCertificatesListWithDevCerts:NO];
+}
+
+- (NSArray *)getDistributionCertificatesListWithDevCerts:(BOOL)willShowDevCerts {
     NSMutableArray *certList = [NSMutableArray array];
     CFTypeRef searchResultsRef;
-    const char *subjectName = kSecurityManagerSubjectNameUTF8CStr;
+    //filter on subject name
+    //show either just distribution certs or dev certs as well
+    const char *subjectName =
+        willShowDevCerts ? kSecurityManageriPhoneSubjectNameUTF8CStr :
+            kSecurityManageriPhoneDistribSubjectNameUTF8CStr;
     CFStringRef subjectNameRef = CFStringCreateWithCString(NULL, subjectName,CFStringGetSystemEncoding());
     CFIndex valCount = 5;
     

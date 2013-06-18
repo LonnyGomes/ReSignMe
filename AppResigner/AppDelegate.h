@@ -57,6 +57,7 @@ typedef enum {
 - (IBAction)doneBtnPressed:(id)sender;
 - (IBAction)openMenuItemInvoked:(id)sender;
 - (IBAction)verboseOptionMenuItemInvoked:(id)sender;
+- (IBAction)showDevCertsMenuItemInvoked:(id)sender;
 
 
 //Interface builder properties
@@ -73,6 +74,7 @@ typedef enum {
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
 @property (weak) IBOutlet NSButton *doneBtn;
 @property (weak) IBOutlet NSButton *browseBtn;
+@property (weak) IBOutlet NSMenuItem *showDevCertsMenuItem;
 
 
 @end
