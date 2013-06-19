@@ -19,7 +19,7 @@ This app is currently in beta mode. It can resign an app but does not allow for 
   * auto detect of Xcode
   * automatically loads iPhone certificates from Keychain
   * verbose output options
-
+  * open in finder after re-signing
 
 
 ## Roadmap ##
