@@ -6,11 +6,11 @@
 //  Copyright (c) 2013 Carpe Lucem Media Group. All rights reserved.
 //
 
-#ifndef AppResigner_AppUserDefaults_h
-#define AppResigner_AppUserDefaults_h
+#ifndef ReSignMe_AppUserDefaults_h
+#define ReSignMe_AppUserDefaults_h
 
 #define kAppDefaultsOutputDir @"appOutputDir"
-#define kAppDefaultsShowDevCerts @"showDevCertificates"
-
+#define kAppDefaultsShowDevCerts @"appShowDevCertificates"
+#define kAppDefaultsIsVerboseOutput @"appisVerboseOutput"
 
 #endif

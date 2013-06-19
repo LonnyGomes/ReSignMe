@@ -89,8 +89,13 @@
         self.outputPathURL = kAppResignerDefaultOutputURL;
     }
     
+    //read in flag for if dev certs will be loaded and set in menu
     self.isShowingDevCerts = [defaults boolForKey:kAppDefaultsShowDevCerts];
     [self.showDevCertsMenuItem setState:self.isShowingDevCerts];
+    
+    //read in flag for if verbosity mode is enabled and set in menu
+    self.isVerboseOutput = [defaults boolForKey:kAppDefaultsIsVerboseOutput];
+    [self.verboseOutputMenuItem setState:self.isVerboseOutput];
 }
 
 - (void)setupDragState:(DragState)dragState {
@@ -361,6 +366,10 @@
     self.isVerboseOutput = (menuItem.state+1) % 2;
 
     [menuItem setState:self.isVerboseOutput];
+    
+    //we've retrieved the value, now set to user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.isVerboseOutput forKey:kAppDefaultsIsVerboseOutput];
 }
 
 - (IBAction)showDevCertsMenuItemInvoked:(id)sender {

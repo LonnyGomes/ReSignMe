@@ -75,6 +75,8 @@ typedef enum {
 @property (weak) IBOutlet NSButton *doneBtn;
 @property (weak) IBOutlet NSButton *browseBtn;
 @property (weak) IBOutlet NSMenuItem *showDevCertsMenuItem;
+@property (weak) IBOutlet NSMenuItem *verboseOutputMenuItem;
+
 
 
 @end
