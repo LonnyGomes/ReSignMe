@@ -253,7 +253,6 @@
         //TODO: format differently for output of commands
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
-        NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", nil, nil, nil);
         [self setupDragState:DragStateReSignComplete];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
@@ -317,7 +316,16 @@
             options |= kSecurityManagerOptionsVerboseOutput;
         }
         
-        [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
+        //everything is set up, lets re-sign the app
+        NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
+        if (outputFileURL) {
+            //if a non-nil value was returned, that means we successfully re-signed the ipa
+            NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
+            if (!panelResult) {
+                //open in finder option was selected so open in finder already
+                [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+            }
+        }
     }
 }
 
