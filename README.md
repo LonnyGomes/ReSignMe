@@ -1,7 +1,7 @@
 ReSignMe iOS App Re-signer
 ==========================
 
-ReSignMe is an OS X app that simplifies the process of re-signing an iOS app down to a few clicks of the mouse. The user is able to drag any ad-hoc signed ipa into the app and re-sign it with one click. The goal of this app is to be as easy as possible to use. It should be able to be used by someone who 
+ReSignMe is an OS X app that simplifies the process of re-signing an iOS app down to a few clicks of the mouse. The user is able to drag any ad-hoc signed ipa into the app and re-sign it with one click. The goal of this app is to be as easy as possible to use.
 
 ![ReSignMe Screen Shot](http://lonnygomes.github.io/screenshots/screenShot1_ReSignMe.png "ReSignMe App")
 
@@ -26,7 +26,6 @@ This app is currently in beta mode. I am in search of volunteers to help test th
   * automatically loads iPhone certificates from Keychain
   * verbose output options
   * open in finder after re-signing
-
 
 ## Roadmap ##
   * adding an "Advanced" mode that contains the following features
