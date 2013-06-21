@@ -55,7 +55,7 @@
 		07F8E6AD16CC4CD500B7090A /* AppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppInfoViewController.m; sourceTree = "<group>"; };
 		07F8E6AE16CC4CD500B7090A /* AppInfoViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AppInfoViewController.xib; sourceTree = "<group>"; };
 		07F8E6B216CC505200B7090A /* iTunesIpaIcon.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = iTunesIpaIcon.png; sourceTree = "<group>"; };
-		07FE869516C7271A00AC4D31 /* App Re-Signer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "App Re-Signer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		07FE869516C7271A00AC4D31 /* ReSignMe.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ReSignMe.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE869816C7271A00AC4D31 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		07FE869B16C7271A00AC4D31 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
 		07FE869C16C7271A00AC4D31 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
@@ -103,8 +103,6 @@
 		0708D7F416C9C4CC009748EF /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
-				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
 				07E0CB9516C75F1B005E6C6A /* CertificateModel.h */,
 				07E0CB9616C75F1B005E6C6A /* CertificateModel.m */,
 			);
@@ -134,7 +132,7 @@
 		07FE869616C7271A00AC4D31 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				07FE869516C7271A00AC4D31 /* App Re-Signer.app */,
+				07FE869516C7271A00AC4D31 /* ReSignMe.app */,
 				07FE86B516C7271A00AC4D31 /* AppResignerTests.octest */,
 			);
 			name = Products;
@@ -166,6 +164,8 @@
 			children = (
 				07F8E6B116CC504700B7090A /* Assets */,
 				0708D7F416C9C4CC009748EF /* Models */,
+				07E0CB8F16C73E8F005E6C6A /* SecurityManager.h */,
+				07E0CB9016C73E8F005E6C6A /* SecurityManager.m */,
 				07E3D7E716CDC1810084F838 /* AppUserDefaults.h */,
 				07FE86AA16C7271A00AC4D31 /* AppDelegate.h */,
 				07FE86AB16C7271A00AC4D31 /* AppDelegate.m */,
@@ -215,9 +215,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		07FE869416C7271A00AC4D31 /* AppResigner */ = {
+		07FE869416C7271A00AC4D31 /* ReSignMe */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResigner" */;
+			buildConfigurationList = 07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "ReSignMe" */;
 			buildPhases = (
 				07FE869116C7271A00AC4D31 /* Sources */,
 				07FE869216C7271A00AC4D31 /* Frameworks */,
@@ -227,14 +227,14 @@
 			);
 			dependencies = (
 			);
-			name = AppResigner;
+			name = ReSignMe;
 			productName = AppResigner;
-			productReference = 07FE869516C7271A00AC4D31 /* App Re-Signer.app */;
+			productReference = 07FE869516C7271A00AC4D31 /* ReSignMe.app */;
 			productType = "com.apple.product-type.application";
 		};
-		07FE86B416C7271A00AC4D31 /* AppResignerTests */ = {
+		07FE86B416C7271A00AC4D31 /* ReSignMeTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResignerTests" */;
+			buildConfigurationList = 07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "ReSignMeTests" */;
 			buildPhases = (
 				07FE86B016C7271A00AC4D31 /* Sources */,
 				07FE86B116C7271A00AC4D31 /* Frameworks */,
@@ -246,7 +246,7 @@
 			dependencies = (
 				07FE86BA16C7271A00AC4D31 /* PBXTargetDependency */,
 			);
-			name = AppResignerTests;
+			name = ReSignMeTests;
 			productName = AppResignerTests;
 			productReference = 07FE86B516C7271A00AC4D31 /* AppResignerTests.octest */;
 			productType = "com.apple.product-type.bundle";
@@ -272,8 +272,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				07FE869416C7271A00AC4D31 /* AppResigner */,
-				07FE86B416C7271A00AC4D31 /* AppResignerTests */,
+				07FE869416C7271A00AC4D31 /* ReSignMe */,
+				07FE86B416C7271A00AC4D31 /* ReSignMeTests */,
 			);
 		};
 /* End PBXProject section */
@@ -345,7 +345,7 @@
 /* Begin PBXTargetDependency section */
 		07FE86BA16C7271A00AC4D31 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 07FE869416C7271A00AC4D31 /* AppResigner */;
+			target = 07FE869416C7271A00AC4D31 /* ReSignMe */;
 			targetProxy = 07FE86B916C7271A00AC4D31 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -453,7 +453,7 @@
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "App Re-Signer";
+				PRODUCT_NAME = ReSignMe;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -466,7 +466,7 @@
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
-				PRODUCT_NAME = "App Re-Signer";
+				PRODUCT_NAME = ReSignMe;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -519,7 +519,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResigner" */ = {
+		07FE86C616C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "ReSignMe" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07FE86C716C7271A00AC4D31 /* Debug */,
@@ -528,7 +528,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "AppResignerTests" */ = {
+		07FE86C916C7271A00AC4D31 /* Build configuration list for PBXNativeTarget "ReSignMeTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				07FE86CA16C7271A00AC4D31 /* Debug */,

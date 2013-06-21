@@ -2,10 +2,10 @@
 <archive type="com.apple.InterfaceBuilder3.Cocoa.XIB" version="8.00">
 	<data>
 		<int key="IBDocument.SystemTarget">1070</int>
-		<string key="IBDocument.SystemVersion">12C3012</string>
+		<string key="IBDocument.SystemVersion">11G63b</string>
 		<string key="IBDocument.InterfaceBuilderVersion">3084</string>
-		<string key="IBDocument.AppKitVersion">1187.34</string>
-		<string key="IBDocument.HIToolboxVersion">625.00</string>
+		<string key="IBDocument.AppKitVersion">1138.51</string>
+		<string key="IBDocument.HIToolboxVersion">569.00</string>
 		<object class="NSMutableDictionary" key="IBDocument.PluginVersions">
 			<string key="NS.key.0">com.apple.InterfaceBuilder.CocoaPlugin</string>
 			<string key="NS.object.0">3084</string>
@@ -78,7 +78,6 @@
 								</object>
 							</object>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="551292567">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -98,7 +97,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="651100192">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -118,7 +116,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="846770348">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -138,14 +135,12 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="673944672">
 						<reference key="NSNextResponder" ref="1005"/>
 						<int key="NSvFlags">268</int>
 						<string key="NSFrame">{{452, 120}, {140, 17}}</string>
 						<reference key="NSSuperview" ref="1005"/>
-						<reference key="NSNextKeyView"/>
 						<string key="NSReuseIdentifierKey">_NS:1535</string>
 						<bool key="NSEnabled">YES</bool>
 						<object class="NSTextFieldCell" key="NSCell" id="965682030">
@@ -158,7 +153,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="458878198">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -178,7 +172,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="836972931">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -198,7 +191,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="908443214">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -218,7 +210,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSTextField" id="175148230">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -243,7 +234,6 @@
 							<reference key="NSBackgroundColor" ref="902645796"/>
 							<reference key="NSTextColor" ref="238844244"/>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 					</object>
 					<object class="NSImageView" id="7376940">
 						<reference key="NSNextResponder" ref="1005"/>
@@ -274,7 +264,6 @@
 							<int key="NSStyle">2</int>
 							<bool key="NSAnimates">NO</bool>
 						</object>
-						<bool key="NSAllowsLogicalLayoutDirection">NO</bool>
 						<bool key="NSEditable">YES</bool>
 					</object>
 				</array>

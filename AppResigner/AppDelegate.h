@@ -1,24 +1,24 @@
 //
 //  AppDelegate.h
-//  AppResigner
+//  ReSignMe
 //
 //  Created by Carpe Lucem Media Group on 2/9/13.
 //  Copyright (c) 2013 Carpe Lucem Media Group. All rights reserved.
 //
-//  This file is part of EzAppResigner.
+//  This file is part of ReSignMe.
 //
-//  Foobar is free software: you can redistribute it and/or modify
+//  ReSignMe is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
 //
-//  Foobar is distributed in the hope that it will be useful,
+//  ReSignMe is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+//  along with ReSignMe.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #import <Cocoa/Cocoa.h>
@@ -56,6 +56,9 @@ typedef enum {
 - (IBAction)reSignBtnPressed:(id)sender;
 - (IBAction)doneBtnPressed:(id)sender;
 - (IBAction)openMenuItemInvoked:(id)sender;
+- (IBAction)verboseOptionMenuItemInvoked:(id)sender;
+- (IBAction)showDevCertsMenuItemInvoked:(id)sender;
+
 
 //Interface builder properties
 @property (assign) IBOutlet NSWindow *window;
@@ -71,6 +74,9 @@ typedef enum {
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
 @property (weak) IBOutlet NSButton *doneBtn;
 @property (weak) IBOutlet NSButton *browseBtn;
+@property (weak) IBOutlet NSMenuItem *showDevCertsMenuItem;
+@property (weak) IBOutlet NSMenuItem *verboseOutputMenuItem;
+
 
 
 @end

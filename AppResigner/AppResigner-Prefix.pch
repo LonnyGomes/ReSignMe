@@ -1,5 +1,5 @@
 //
-// Prefix header for all source files of the 'AppResigner' target in the 'AppResigner' project
+// Prefix header for all source files of the 'ReSignMe' target in the 'ReSignMe' project
 //
 
 #ifdef __OBJC__

@@ -1,6 +1,6 @@
 //
 //  AppDelegate.m
-//  AppResigner
+//  ReSignMe
 //
 //  Created by Carpe Lucem Media Group on 2/9/13.
 //  Copyright (c) 2013 Carpe Lucem Media Group. All rights reserved.
@@ -27,7 +27,10 @@
 
 @interface AppDelegate()
 - (void)scrollToBottom;
+- (void)displayNoValidCertError;
 @property (nonatomic, strong) SecurityManager *sm;
+@property (nonatomic, assign) BOOL isVerboseOutput;
+@property (nonatomic, assign) BOOL isShowingDevCerts;
 @end
 
 @implementation AppDelegate
@@ -43,7 +46,7 @@
     //clear all default entries
     [self.certPopDownBtn removeAllItems];
     
-    //ensure security manager stars w/o dependency problems
+    //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
     if (!self.sm) {
         [self setupDragState:DragStateFatalError];
@@ -55,19 +58,16 @@
         return;
     }
     
-   
-    
-    if ([self populateCertPopDown:[self.sm getDistributionCertificatesList]]) {
+    //load user defaults before going any further
+    [self loadUserDefaults];
+
+    //load appropriate cert list
+    if ([self populateCertPopDown:self.isShowingDevCerts ? self.sm.getDistributionAndDevCertificatesList : self.sm.getDistributionCertificatesList]) {
         [self setupDragState:DragStateInital];
-        [self loadUserDefaults];
+        
         [self registerForNotifications];
     } else {
-        [self setupDragState:DragStateFatalError];
-         NSRunAlertPanel(@"Certificate Error",
-            @"No valid certificates were found!\n"
-            "Please install a distribution certificate using the 'Keychain Access' tool.\n\n"
-            "The Keychain Access tool can be found in Applications -> Utilities\n\n"
-            "A certificate is needed to resign your apps!", nil, nil, nil);
+        [self displayNoValidCertError];
     }
 }
 
@@ -88,6 +88,14 @@
     } else {
         self.outputPathURL = kAppResignerDefaultOutputURL;
     }
+    
+    //read in flag for if dev certs will be loaded and set in menu
+    self.isShowingDevCerts = [defaults boolForKey:kAppDefaultsShowDevCerts];
+    [self.showDevCertsMenuItem setState:self.isShowingDevCerts];
+    
+    //read in flag for if verbosity mode is enabled and set in menu
+    self.isVerboseOutput = [defaults boolForKey:kAppDefaultsIsVerboseOutput];
+    [self.verboseOutputMenuItem setState:self.isVerboseOutput];
 }
 
 - (void)setupDragState:(DragState)dragState {
@@ -193,7 +201,10 @@
 
 - (BOOL)populateCertPopDown:(NSArray *)certModels {
     BOOL wasSuccess = YES;
+    //remove any existing models
+    [self.certPopDownBtn removeAllItems];
     
+    //loop through all cert models and add them into the pop down
     for (CertificateModel *curModel in certModels) {
         [self.certPopDownBtn addItemWithTitle:curModel.label];
     }
@@ -221,22 +232,36 @@
     
 }
 
+#pragma mark - Error popup methods
+- (void)displayNoValidCertError {
+    [self setupDragState:DragStateFatalError];
+    NSRunAlertPanel(@"Certificate Error",
+                    @"No valid certificates were found!\n"
+                    "Please install a distribution certificate using the 'Keychain Access' tool.\n\n"
+                    "The Keychain Access tool can be found in Applications -> Utilities\n\n"
+                    "A certificate is needed to resign your apps!", nil, nil, nil);
+    
+}
+
 #pragma mark - Security Manager Notifcation selectors
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
+    NSAttributedString *messageAttrb =
+        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"]];
+    
     //NSLog(@"Got notification:%@", message);
     //TODO:based on the notification type, format the text
     
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@\n", message]];
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
+        //TODO: format differently for output of commands
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
-        NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", nil, nil, nil);
         [self setupDragState:DragStateReSignComplete];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
-        [self.statusTextView setString:[self.statusTextView.string stringByAppendingFormat:@"%@", message]];
-        NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length, message.length);
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
+        NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
         [self setupDragState:DragStateRecoverableError];
         [self scrollToBottom];
@@ -289,7 +314,23 @@
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
         NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL];
+        
+        
+        NSInteger options = 0;
+        if (self.isVerboseOutput) {
+            options |= kSecurityManagerOptionsVerboseOutput;
+        }
+        
+        //everything is set up, lets re-sign the app
+        NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
+        if (outputFileURL) {
+            //if a non-nil value was returned, that means we successfully re-signed the ipa
+            NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
+            if (!panelResult) {
+                //open in finder option was selected so open in finder already
+                [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+            }
+        }
     }
 }
 
@@ -315,6 +356,42 @@
         [self.appInfoVC loadIpaFile:openDlg.URL];
     }
 
+}
+
+- (IBAction)verboseOptionMenuItemInvoked:(id)sender {
+    
+    NSMenuItem *menuItem = (NSMenuItem *)sender;
+
+    //toggle verbose state and store it's value
+    self.isVerboseOutput = (menuItem.state+1) % 2;
+
+    [menuItem setState:self.isVerboseOutput];
+    
+    //we've retrieved the value, now set to user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.isVerboseOutput forKey:kAppDefaultsIsVerboseOutput];
+}
+
+- (IBAction)showDevCertsMenuItemInvoked:(id)sender {
+    //toggle state and update menu item
+    self.isShowingDevCerts = (self.showDevCertsMenuItem.state + 1) % 2;
+    [self.showDevCertsMenuItem setState:self.isShowingDevCerts];
+    
+    //store the new state in the user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.isShowingDevCerts forKey:kAppDefaultsShowDevCerts];
+    
+    //re-populate the pop-down based on the the user's selection
+    BOOL wasSuccess = NO;
+    if (self.isShowingDevCerts) {
+        wasSuccess = [self populateCertPopDown:self.sm.getDistributionAndDevCertificatesList];
+    } else {
+        wasSuccess = [self populateCertPopDown:self.sm.getDistributionCertificatesList];
+    }
+    
+    if (!wasSuccess) {
+        [self displayNoValidCertError];
+    }
 }
 
 #pragma mark - AppDropView delegate methods

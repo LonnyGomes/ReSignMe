@@ -1,24 +1,24 @@
 //
 //  CertificateManager.m
-//  AppResigner
+//  ReSignMe
 //
 //  Created by Carpe Lucem Media Group on 2/9/13.
 //  Copyright (c) 2013 Carpe Lucem Media Group. All rights reserved.
 //
-//  This file is part of EzAppResigner.
+//  This file is part of ReSignMe.
 //
-//  Foobar is free software: you can redistribute it and/or modify
+//  ReSignMe is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
 //  the Free Software Foundation, either version 3 of the License, or
 //  (at your option) any later version.
 //
-//  Foobar is distributed in the hope that it will be useful,
+//  ReSignMe is distributed in the hope that it will be useful,
 //  but WITHOUT ANY WARRANTY; without even the implied warranty of
 //  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 //  GNU General Public License for more details.
 //
 //  You should have received a copy of the GNU General Public License
-//  along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+//  along with ReSignMe.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "SecurityManager.h"
 #import "CertificateModel.h"
@@ -29,7 +29,6 @@
 #define kCmdZip @"/usr/bin/zip"
 #define kCmdUnzip @"/usr/bin/unzip"
 #define kCmdMkTemp @"/usr/bin/mktemp"
-#define kCmdRm @"/bin/rm"
 
 #define kSecurityManagerBaseCdmCodeSign @"codesign"
 #define kSecurityManagerBaseCdmCodeSignAllocate @"codesign_allocate"
@@ -39,11 +38,12 @@
 #define kSecurityManagerWorkingSubDir @"dump"
 #define kSecurityManagerPayloadDir @"Payload"
 #define kSecurityManagerResourcesPlistDir @"ResourceRules.plist"
-#define kSecurityManagerRenameStr @"_renamed"
+#define kSecurityManagerRenameStr @"_reSigned"
 
 @interface SecurityManager()
 @property (nonatomic, strong) NSString *pathForCodesign;
 @property (nonatomic, strong) NSString *pathForCodesignAlloc;
+- (NSArray *)getDistributionCertificatesListWithDevCerts:(BOOL)willShowDevCerts;
 - (NSURL *)genTempPath;
 - (BOOL)purgeTempFolderAtPath:(NSURL *)tmpPathURL;
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
@@ -104,10 +104,22 @@ static SecurityManager *_certManager = nil;
     return (self.pathForCodesign && self.pathForCodesignAlloc);
 }
 
+- (NSArray *)getDistributionAndDevCertificatesList {
+    return  [self getDistributionCertificatesListWithDevCerts:YES];
+}
+
 - (NSArray *)getDistributionCertificatesList {
+    return [self getDistributionCertificatesListWithDevCerts:NO];
+}
+
+- (NSArray *)getDistributionCertificatesListWithDevCerts:(BOOL)willShowDevCerts {
     NSMutableArray *certList = [NSMutableArray array];
     CFTypeRef searchResultsRef;
-    const char *subjectName = kSecurityManagerSubjectNameUTF8CStr;
+    //filter on subject name
+    //show either just distribution certs or dev certs as well
+    const char *subjectName =
+        willShowDevCerts ? kSecurityManageriPhoneSubjectNameUTF8CStr :
+            kSecurityManageriPhoneDistribSubjectNameUTF8CStr;
     CFStringRef subjectNameRef = CFStringCreateWithCString(NULL, subjectName,CFStringGetSystemEncoding());
     CFIndex valCount = 5;
     
@@ -228,9 +240,16 @@ static SecurityManager *_certManager = nil;
     return str;
 }
 
-- (void)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
+- (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
+    return [self signAppWithIdenity:identity appPath:appPathURL outputPath:outputPathURL options:0];
+}
+
+- (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
+    
+    //parse option flags
+    BOOL isVerboseOutput = OPTION_IS_VERBOSE(optionFlags);
     
     //retrieve the ipa name
     NSString *ipaName = [appPathURL lastPathComponent];
@@ -242,17 +261,19 @@ static SecurityManager *_certManager = nil;
     
     NSURL *tmpPathURL = [self genTempPath];
     
-    [self postNotifcation:kSecurityManagerNotificationEvent
+    if (isVerboseOutput) {
+        [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Created temp directory: %@", [tmpPathURL path]]];
     
-    //copy the ipa over to the temp folder
-    [self postNotifcation:kSecurityManagerNotificationEvent
+        //copy the ipa over to the temp folder
+        [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Copying %@ to %@", ipaName, [tmpPathURL path]]];
+    }
     
     //TODO:add group queue!
     if (![self copyIpaBundleWithSrcURL:appPathURL destinationURL:[tmpPathURL URLByAppendingPathComponent:ipaName]]) {
         [self purgeTempFolderAtPath:tmpPathURL];
-        return;
+        return nil;
     }
     
     
@@ -260,15 +281,25 @@ static SecurityManager *_certManager = nil;
     NSURL *tempIpaSrcPath = [tmpPathURL URLByAppendingPathComponent:ipaName];
     NSURL *tempIpaDstPath = [tmpPathURL URLByAppendingPathComponent:kSecurityManagerWorkingSubDir];
     
-    [self postNotifcation:kSecurityManagerNotificationEvent
-              withMessage:[NSString stringWithFormat:@"Unziping %@ to %@ ...", ipaName, [tmpPathURL path]]];
+    if (isVerboseOutput) {
+        [self postNotifcation:kSecurityManagerNotificationEvent
+              withMessage:[NSString stringWithFormat:@"Uncompressing %@ to %@ ...", ipaName, [tmpPathURL path]]];
+    } else {
+        [self postNotifcation:kSecurityManagerNotificationEvent
+                  withMessage:[NSString stringWithFormat:@"Uncompressing %@ ...", ipaName]];
+        
+    }
+    
     //now unzip the contents of the ipa to prepare for resigning
     NSTask *unzipTask = [[NSTask alloc] init];
     pipe = [NSPipe pipe];
     file = [pipe fileHandleForReading];
     
-    [unzipTask setStandardOutput:pipe];
+    if (isVerboseOutput) {
+        [unzipTask setStandardOutput:pipe];
+    }
     [unzipTask setStandardError:pipe];
+    
     [unzipTask setLaunchPath:kCmdUnzip];
     [unzipTask setArguments:@[[tempIpaSrcPath path], @"-d", [tempIpaDstPath path]]];
     [unzipTask launch];
@@ -290,13 +321,13 @@ static SecurityManager *_certManager = nil;
         [self postNotifcation:kSecurityManagerNotificationEventError
                   withMessage:[NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath]];
         [self purgeTempFolderAtPath:tmpPathURL];
-        return;
+        return nil;
     } else if (payloadPathContents.count != 1) {
         [self postNotifcation:kSecurityManagerNotificationEventError
                   withMessage:@"Unexpected output in Payloads directory of the IPA!"];
         
         [self purgeTempFolderAtPath:tmpPathURL];
-        return;
+        return nil;
     }
     
     //setup paths for codesign
@@ -336,7 +367,7 @@ static SecurityManager *_certManager = nil;
                   withMessage:[NSString stringWithFormat:@"FAILURE: %@", codesignOutput]];
         
         [self purgeTempFolderAtPath:tmpPathURL];
-        return;
+        return nil;
     }
     
     [self postNotifcation:kSecurityManagerNotificationEventOutput
@@ -345,6 +376,7 @@ static SecurityManager *_certManager = nil;
     //Repackage app
     NSString *resignedAppName = [[ipaName stringByDeletingPathExtension] stringByAppendingFormat:@"%@.ipa",kSecurityManagerRenameStr];
     NSString *zipOutputPath = [[outputPathURL URLByAppendingPathComponent:resignedAppName] path];
+    NSURL *zipOutputPathURL = [NSURL fileURLWithPath:zipOutputPath];//This must be a file URL as it will be returned in the method
     
     [self postNotifcation:kSecurityManagerNotificationEvent
               withMessage:[NSString stringWithFormat:@"Saving re-signed app '%@' to output directory: %@ ...", resignedAppName, [outputPathURL path]]];
@@ -362,7 +394,7 @@ static SecurityManager *_certManager = nil;
                   withMessage:[NSString stringWithFormat:@"zip failed to package %@", zipOutputPath]];
         
         [self purgeTempFolderAtPath:tmpPathURL];
-        return;
+        return nil;
     }
     
     if ([self purgeTempFolderAtPath:tmpPathURL]) {
@@ -370,6 +402,7 @@ static SecurityManager *_certManager = nil;
         [self postNotifcation:kSecurityManagerNotificationEventComplete withMessage:[NSString stringWithFormat:@"The ipa has been successuflly re-signed and is named '%@'", resignedAppName]];
     }
     
+    return zipOutputPathURL;
 }
 
 @end
