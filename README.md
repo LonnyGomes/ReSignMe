@@ -1,7 +1,7 @@
 ![ReSignMe icon](http://lonnygomes.github.io/images/apps/iconReSignMe_128.png) ReSignMe iOS App Re-signer
 ==========================
 
-ReSignMe is an OS X app that simplifies the process of re-signing an iOS app down to a few clicks of the mouse. The user is able to drag any ad-hoc signed ipa into the app and re-sign it with one click. The goal of this app is to be as easy as possible to use.
+ReSignMe is an OS X app that simplifies the process of re-signing an iOS app down to a few clicks of the mouse. The user is able to drag any ad-hoc signed ipa into the app and re-sign it with one click. The goal of this app is to be as easy as possible to use. There is [Documentation] (http://github.com/LonnyGomes/ReSignMe/wiki/Documentation) for basic instructions on using the app and all of it's options.
 
 ![ReSignMe Screen Shot](http://lonnygomes.github.io/screenshots/screenShot1_ReSignMe.png "ReSignMe App")
 
@@ -34,5 +34,3 @@ This app is currently in beta mode. I am in search of volunteers to help test th
     * add ability to specify an entitlement
   * adding help
   * adding preferences
-
-Check out the [Documentation] (https://github.com/LonnyGomes/ReSignMe/wiki/Documentation) page for instructions on using the app.
