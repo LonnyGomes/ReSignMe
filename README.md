@@ -34,3 +34,5 @@ This app is currently in beta mode. I am in search of volunteers to help test th
     * add ability to specify an entitlement
   * adding help
   * adding preferences
+
+Check out the [Documentation] (https://github.com/LonnyGomes/ReSignMe/wiki/Documentation) page for instructions on using the app.
