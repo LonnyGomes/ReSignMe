@@ -46,6 +46,10 @@
     [self populateFields:ipaFileURL];
 }
 
+- (void)loadIpaFileList:(NSArray *)ipaFileURLList {
+    
+}
+
 - (void)populateFields:(NSURL *)url {
     [self.fileNameTextField setStringValue:[url lastPathComponent]];
     NSError *error;

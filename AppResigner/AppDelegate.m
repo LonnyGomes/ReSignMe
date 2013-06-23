@@ -268,7 +268,7 @@
         NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
                             @"The following error occurred when attempting to\nre-sign '%@':\n\n%@",
-                                [self.dropView.selectedIPA lastPathComponent], message],
+                                [self.dropView.currentIPA lastPathComponent], message],
                         nil, nil, nil);
     }
     
@@ -305,37 +305,44 @@
         NSRunAlertPanel(@"Not a valid Directory",
                         @"The path specified for the Output Directory is not a directory!",
                         nil, nil, nil);
-    } else if (!self.dropView.selectedIPA) {
+    } else if (!self.dropView.selectedIPAs) {
         NSRunAlertPanel(@"No ipa file specified",
                         @"No ipa has been selected. Please drag an ipa file into the app to re-sign it.",
                         nil, nil, nil);
     } else {
-        [self setupDragState:DragStateReSign];
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
-        NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
+        NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
         NSInteger options = 0;
         if (self.isVerboseOutput) {
             options |= kSecurityManagerOptionsVerboseOutput;
         }
         
-        //everything is set up, lets re-sign the app
-        NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
-        if (outputFileURL) {
-            //if a non-nil value was returned, that means we successfully re-signed the ipa
-            NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
-            if (!panelResult) {
-                //open in finder option was selected so open in finder already
-                [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+        if (self.dropView.selectedIPAs.count == 1) {
+            NSString *selIPA = [self.dropView.selectedIPAs objectAtIndex:0];
+            NSURL *appURL = [NSURL URLWithString:[selIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            
+            [self setupDragState:DragStateReSign];
+            
+            //everything is set up, lets re-sign the app
+            NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
+            if (outputFileURL) {
+                //if a non-nil value was returned, that means we successfully re-signed the ipa
+                NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
+                if (!panelResult) {
+                    //open in finder option was selected so open in finder already
+                    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+                }
             }
+        } else {
+            NSLog(@"TODO: re-sign multiple apps");
         }
     }
 }
 
 - (IBAction)doneBtnPressed:(id)sender {
-    self.dropView.selectedIPA = nil;
+    self.dropView.selectedIPAs = nil;
     self.statusTextView.string = @"";
     [self setupDragState:DragStateInital];
 }
@@ -346,11 +353,11 @@
     openDlg.canChooseDirectories = NO;
     openDlg.canChooseFiles = YES;
     openDlg.canCreateDirectories = NO;
-    openDlg.allowsMultipleSelection = NO;
+    openDlg.allowsMultipleSelection = YES;
     openDlg.allowedFileTypes = @[@"ipa"]; //TODO: shouldn't be hardcoded
     
     if ( [openDlg runModal] == NSOKButton ) {
-        self.dropView.selectedIPA = openDlg.URL.path;
+        self.dropView.selectedIPAs = [NSArray arrayWithArray:openDlg.URLs];
         [self setupDragState:DragStateAppSelected];
     
         [self.appInfoVC loadIpaFile:openDlg.URL];
@@ -399,6 +406,10 @@
     [self setupDragState:DragStateAppSelected];
     
     [self.appInfoVC loadIpaFile:ipaPathURL];
+}
+
+- (void)appDropView:(AppDropView *)appDropView filesWereDraggedIntoView:(NSURL *)ipaPathURLs {
+    
 }
 
 - (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path {
