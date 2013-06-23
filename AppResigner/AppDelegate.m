@@ -25,6 +25,9 @@
 #import "SecurityManager.h"
 #import "AppUserDefaults.h"
 
+#define kMultiAppInfoXOffset 2
+#define kMultiAppInfoYOffset 5
+
 @interface AppDelegate()
 - (void)scrollToBottom;
 - (void)displayNoValidCertError;
@@ -41,8 +44,12 @@
     //place appInfoView where it should be
     [self.boxOutline addSubview:self.appInfoVC.view];
     
-    //place multiInfoView in the same position as appInfoView
+    //place multiInfoView in inside box view with specified offsets
     [self.boxOutline addSubview:self.multiAppInfoVC.view];
+    CGRect multiAppInfoVCFrame = [self.multiAppInfoVC.view frame];
+    multiAppInfoVCFrame.origin.x = kMultiAppInfoXOffset;
+    multiAppInfoVCFrame.origin.y = kMultiAppInfoYOffset;
+    [self.multiAppInfoVC.view setFrame:multiAppInfoVCFrame];
     
     [self.dropView setDelegate:self];
     
