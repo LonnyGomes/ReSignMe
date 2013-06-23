@@ -24,7 +24,12 @@
 
 #import <Foundation/Foundation.h>
 
-#define kAppInfoDateFormat @"dd MMM yyyy HH:mm:ss"
+#define kAppInfoModelDateFormat @"dd MMM yyyy HH:mm:ss"
+
+#define kAppInfoModelStatusNotStarted @"Not Started"
+#define kAppInfoModelStatusStarted @"Started"
+#define kAppInfoModelStatusCompleted @"Completed"
+#define kAppInfoModelStatusFailed @"Failed"
 
 @interface AppInfoModel : NSObject
 - (id)initWithURL:(NSURL *)ipaURL;

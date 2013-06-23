@@ -49,7 +49,7 @@
         self.modificationDate = [self getModificationDateForIPA:ipaURL];
         self.owner = [self getOwnerForIPA:ipaURL];
         self.fileSize = [self getFilesizeForIPA:ipaURL];
-        self.status = @"Not started";
+        self.status = kAppInfoModelStatusNotStarted;
     }
     
     return self;
@@ -60,7 +60,7 @@
     self.fileAttribs = [[NSFileManager defaultManager] attributesOfItemAtPath:ipaURL.path error:&error];
     
     self.dateFormatter = [[NSDateFormatter alloc] init ];
-    [self.dateFormatter setDateFormat:kAppInfoDateFormat];
+    [self.dateFormatter setDateFormat:kAppInfoModelDateFormat];
 }
 
 #pragma mark - helper methods for working with IPAs
