@@ -8,6 +8,16 @@
 
 #import <Cocoa/Cocoa.h>
 
-@interface MultiAppInfoViewController : NSViewController
+#define kMultiAppInfoTableCellFilename @"AppInfoCellFilename"
+#define kMultiAppInfoTableCellDate @"AppInfoCellDate"
+#define kMultiAppInfoTableCellFileSize @"AppInfoCellFileSize"
+#define kMultiAppInfoTableCellStatus @"AppInfoCellStatus"
+
+@interface MultiAppInfoViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
+
+- (void)loadIpaFilesList:(NSArray *)ipaFileURLs;
+- (void)reset;
+
+@property (weak) IBOutlet NSTableView *ipaTableView;
 
 @end

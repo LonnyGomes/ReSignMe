@@ -21,6 +21,7 @@
 //  along with ReSignMe.  If not, see <http://www.gnu.org/licenses/>.
 
 #import "AppInfoViewController.h"
+#import "AppInfoModel.h"
 
 @interface AppInfoViewController ()
 - (void)populateFields:(NSURL *)url;
@@ -51,24 +52,13 @@
 }
 
 - (void)populateFields:(NSURL *)url {
-    [self.fileNameTextField setStringValue:[url lastPathComponent]];
-    NSError *error;
-    
-    NSDictionary *fileAttribs = [[NSFileManager defaultManager] attributesOfItemAtPath:url.path error:&error];
-   
-    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init ];
-    [dateFormatter setDateFormat:@"dd MMM yyyy HH:mm:ss"];
+    AppInfoModel *model = [[AppInfoModel alloc] initWithURL:url];
+    [self.fileNameTextField setStringValue:model.filename];
 
-    self.fileOwnerTextField.stringValue = [fileAttribs fileOwnerAccountName];
-    self.fileModificationTextField.stringValue =
-        [dateFormatter stringFromDate:[fileAttribs fileModificationDate]];
-    
-    self.fileCreationTextField.stringValue =
-        [dateFormatter stringFromDate:[fileAttribs fileCreationDate]];
-    
-    unsigned long long fileSize = [fileAttribs fileSize];
-    float fileSizeMB = fileSize/pow(1024.0, 2);
-    self.fileSizeTextField.stringValue = [NSString stringWithFormat:@"%.2f MB", fileSizeMB];
+    self.fileOwnerTextField.stringValue = model.owner;
+    self.fileModificationTextField.stringValue = model.modificationDate;
+    self.fileCreationTextField.stringValue = model.creationDate;;
+    self.fileSizeTextField.stringValue = model.fileSize;
 }
 
 - (void)reset {

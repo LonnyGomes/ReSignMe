@@ -41,6 +41,9 @@
     //place appInfoView where it should be
     [self.boxOutline addSubview:self.appInfoVC.view];
     
+    //place multiInfoView in the same position as appInfoView
+    [self.boxOutline addSubview:self.multiAppInfoVC.view];
+    
     [self.dropView setDelegate:self];
     
     //clear all default entries
@@ -106,10 +109,19 @@
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateAppSelected:
+            [self.statusScrollView setHidden:YES];
+            [self.progressBar stopAnimation:self];
+            [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:NO];
+            [self.doneBtn setHidden:YES];
+            [self.reSignBtn setEnabled:YES];
+            break;
+        case DragStateMultiAppsSelected:
             [self.statusScrollView setHidden:YES];
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
@@ -123,6 +135,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -132,6 +145,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -141,6 +155,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -150,6 +165,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             
             [self.dropView setHidden:YES];
@@ -358,9 +374,15 @@
     
     if ( [openDlg runModal] == NSOKButton ) {
         self.dropView.selectedIPAs = [NSArray arrayWithArray:openDlg.URLs];
-        [self setupDragState:DragStateAppSelected];
+
+        if (self.dropView.selectedIPAs.count == 1) {
+            [self setupDragState:DragStateAppSelected];
+            [self.appInfoVC loadIpaFile:openDlg.URL];
+        } else {
+            [self setupDragState:DragStateMultiAppsSelected];
+            [self.multiAppInfoVC loadIpaFilesList:self.dropView.selectedIPAs];
+        }
     
-        [self.appInfoVC loadIpaFile:openDlg.URL];
     }
 
 }
@@ -408,8 +430,10 @@
     [self.appInfoVC loadIpaFile:ipaPathURL];
 }
 
-- (void)appDropView:(AppDropView *)appDropView filesWereDraggedIntoView:(NSURL *)ipaPathURLs {
+- (void)appDropView:(AppDropView *)appDropView filesWereDraggedIntoView:(NSArray *)ipaPathURLs {
+    [self setupDragState:DragStateMultiAppsSelected];
     
+    [self.multiAppInfoVC loadIpaFilesList:ipaPathURLs];
 }
 
 - (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path {
