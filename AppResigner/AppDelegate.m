@@ -343,8 +343,7 @@
         }
         
         if (self.dropView.selectedIPAs.count == 1) {
-            NSString *selIPA = [self.dropView.selectedIPAs objectAtIndex:0];
-            NSURL *appURL = [NSURL URLWithString:[selIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            NSURL *appURL = [self.dropView.selectedIPAs objectAtIndex:0];
             
             [self setupDragState:DragStateReSign];
             
@@ -360,6 +359,7 @@
             }
         } else {
             NSLog(@"TODO: re-sign multiple apps");
+            [self.sm signMultipleAppWithIdenity:selectedIdentity appPaths:self.dropView.selectedIPAs outputPath:outputURL options:options];
         }
     }
 }

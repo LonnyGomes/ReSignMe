@@ -154,21 +154,23 @@
     self.isInDragState = NO;
     [self setNeedsDisplay:YES];
     
-    //TODO: handle multiple files
     NSArray *paths  = [self getIpaFilenamesFromPasteBoard:sender];
-    self.selectedIPAs = [NSArray arrayWithArray:paths];
     
-    if (self.delegate && self.selectedIPAs) {
-        if (self.selectedIPAs.count == 1) {
-            NSURL *ipaURL = [NSURL URLWithString:[[self.selectedIPAs objectAtIndex:0] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+    if (self.delegate && paths) {
+        if (paths.count == 1) {
+            NSURL *ipaURL = [NSURL URLWithString:[[paths objectAtIndex:0] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            
+            self.selectedIPAs = @[ ipaURL];
             [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:ipaURL];
         } else {
             NSMutableArray *urls = [NSMutableArray array];
             NSURL *curIpaURL;
-            for (NSString *curIpaFilename in self.selectedIPAs) {
+            for (NSString *curIpaFilename in paths) {
                 curIpaURL = [NSURL URLWithString:[curIpaFilename stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
                 [urls addObject:curIpaURL];
             }
+            
+            self.selectedIPAs = [NSArray arrayWithArray:urls];
 
             [self.delegate performSelector:@selector(appDropView:filesWereDraggedIntoView:) withObject:self withObject:urls];
 

@@ -240,6 +240,16 @@ static SecurityManager *_certManager = nil;
     return str;
 }
 
+- (void) signMultipleAppWithIdenity:(NSString *)identity appPaths:(NSArray *)appPathsURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
+    //add the multiple files mode flag in as an option
+    optionFlags |= kSecurityManagerOptionsMultiFileMode;
+    
+    NSURL *reSignedURL;
+    for (NSURL *curAppPath in appPathsURL) {
+        reSignedURL = [self signAppWithIdenity:identity appPath:curAppPath outputPath:outputPathURL options:optionFlags];
+    }
+}
+
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
     return [self signAppWithIdenity:identity appPath:appPathURL outputPath:outputPathURL options:0];
 }
@@ -250,6 +260,7 @@ static SecurityManager *_certManager = nil;
     
     //parse option flags
     BOOL isVerboseOutput = OPTION_IS_VERBOSE(optionFlags);
+    BOOL isMultiFileMode = OPTION_IS_MULTI_FILE(optionFlags);
     
     //retrieve the ipa name
     NSString *ipaName = [appPathURL lastPathComponent];
@@ -318,12 +329,15 @@ static SecurityManager *_certManager = nil;
     if (payloadError) {
         NSLog(@"Could not open: %@", [payloadPathURL path]);
         
-        [self postNotifcation:kSecurityManagerNotificationEventError
-                  withMessage:[NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath]];
+        NSString *unzipErrorStr = [NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath];
+        NSString *notificationStr = ERROR_EVENT(isMultiFileMode);
+        [self postNotifcation:notificationStr withMessage:unzipErrorStr];
+        
         [self purgeTempFolderAtPath:tmpPathURL];
         return nil;
     } else if (payloadPathContents.count != 1) {
-        [self postNotifcation:kSecurityManagerNotificationEventError
+        NSString *notificationStr = ERROR_EVENT(isMultiFileMode);
+        [self postNotifcation:notificationStr
                   withMessage:@"Unexpected output in Payloads directory of the IPA!"];
         
         [self purgeTempFolderAtPath:tmpPathURL];
