@@ -75,7 +75,6 @@
 		07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		07FE86BD16C7271A00AC4D31 /* AppResignerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppResignerTests-Info.plist"; sourceTree = "<group>"; };
 		07FE86BF16C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		07FE86C116C7271A00AC4D31 /* AppResignerTests.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppResignerTests.h; sourceTree = "<group>"; };
 		07FE86C216C7271A00AC4D31 /* AppResignerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppResignerTests.m; sourceTree = "<group>"; };
 		8A98AFDB17767C55009DF933 /* MultiAppInfoViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MultiAppInfoViewController.h; sourceTree = "<group>"; };
 		8A98AFDC17767C55009DF933 /* MultiAppInfoViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MultiAppInfoViewController.m; sourceTree = "<group>"; };
@@ -209,7 +208,6 @@
 		07FE86BB16C7271A00AC4D31 /* AppResignerTests */ = {
 			isa = PBXGroup;
 			children = (
-				07FE86C116C7271A00AC4D31 /* AppResignerTests.h */,
 				07FE86C216C7271A00AC4D31 /* AppResignerTests.m */,
 				07FE86BC16C7271A00AC4D31 /* Supporting Files */,
 			);
