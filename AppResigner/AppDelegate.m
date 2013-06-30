@@ -28,6 +28,12 @@
 #define kMultiAppInfoXOffset 2
 #define kMultiAppInfoYOffset 5
 
+#define NOTIFICATION_HEADER_FONT @"Monaco"
+#define NOTIFICATION_HEADER_FONT_SIZE 14
+
+#define OUTPUT_FONT @"Courier New"
+#define OUTPUT_FONT_SIZE 20
+
 @interface AppDelegate()
 - (void)scrollToBottom;
 - (void)displayNoValidCertError;
@@ -55,6 +61,9 @@
     
     //clear all default entries
     [self.certPopDownBtn removeAllItems];
+    
+    //set default font for text output
+    [self.statusTextView setFont:[NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE]];
     
     //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
@@ -277,6 +286,13 @@
     
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
+
+        //format a header message differently
+        if ([notification.userInfo valueForKey:kSecurityManagerNotificationHeaderFormatKey]) {
+            NSRange messageRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
+
+            [self.statusTextView setFont:[NSFont fontWithName:NOTIFICATION_HEADER_FONT size:NOTIFICATION_HEADER_FONT_SIZE] range:messageRange];
+        }
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
         //TODO: format differently for output of commands
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];

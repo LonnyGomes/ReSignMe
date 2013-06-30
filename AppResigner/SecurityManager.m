@@ -49,6 +49,7 @@
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
 - (NSString *)cleanPath:(NSURL *)path;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
+- (void)postNotifcation:(SMNotificationType *)type withHeaderMessage:(NSString *)message;
 @end
 
 @implementation SecurityManager
@@ -174,6 +175,15 @@ static SecurityManager *_certManager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:type object:self userInfo:[NSDictionary dictionaryWithObject:message forKey:kSecurityManagerNotificationKey]];
 }
 
+- (void)postNotifcation:(SMNotificationType *)type withHeaderMessage:(NSString *)message {
+    NSDictionary *dict = @{
+                           kSecurityManagerNotificationKey:message,
+                           kSecurityManagerNotificationHeaderFormatKey: @YES
+                           };
+    [[NSNotificationCenter defaultCenter] postNotificationName:type object:self
+                                                      userInfo:dict];
+}
+
 - (NSURL *)genTempPath {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
@@ -245,8 +255,26 @@ static SecurityManager *_certManager = nil;
     optionFlags |= kSecurityManagerOptionsMultiFileMode;
     
     NSURL *reSignedURL;
+    NSString *reSignMessage;
+    NSString *reSignFormattedMessage;
+    NSUInteger curCount = 1;
     for (NSURL *curAppPath in appPathsURL) {
+        reSignFormattedMessage = @"";
+        reSignMessage = [NSString stringWithFormat:
+                         @"Re-signing %@ (%ld/%ld)",
+                         [curAppPath lastPathComponent], curCount, (unsigned long)appPathsURL.count];
+        NSString *bannerStr = @"";
+        for (int curChar = 0; curChar < reSignMessage.length; curChar++) {
+            bannerStr = [bannerStr stringByAppendingString:@"\u2500"];
+        }
+        reSignFormattedMessage = [NSString stringWithFormat:@"\n%@\n%@\n%@", bannerStr, reSignMessage, bannerStr];
+
+        [self postNotifcation:kSecurityManagerNotificationEvent
+                  withHeaderMessage:reSignFormattedMessage];
+
         reSignedURL = [self signAppWithIdenity:identity appPath:curAppPath outputPath:outputPathURL options:optionFlags];
+
+        curCount++;
     }
 }
 

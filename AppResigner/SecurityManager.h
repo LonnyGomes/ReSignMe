@@ -24,6 +24,7 @@
 #import <Foundation/Foundation.h>
 
 #define kSecurityManagerNotificationKey @"notificationDictKey"
+#define kSecurityManagerNotificationHeaderFormatKey @"notificationDictIsHeaderKey"
 #define kSecurityManagerNotificationEvent @"SecurityManagerNotificationEvent"
 #define kSecurityManagerNotificationEventOutput @"SecurityManagerNotificationEventOutput"
 #define kSecurityManagerNotificationEventComplete @"SecurityManagerNotificationEventComplete"
