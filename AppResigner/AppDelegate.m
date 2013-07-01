@@ -321,11 +321,17 @@
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
         [self setupDragState:DragStateRecoverableError];
         [self scrollToBottom];
-        NSRunAlertPanel(@"Signing Error",
+
+        //only display error if one IPA is selected to re-sign
+        //in the case of multiple IPAs, the errors should be
+        //suppressed until the end
+        if (self.dropView.selectedIPAs.count == 1) {
+            NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
                             @"The following error occurred when attempting to\nre-sign '%@':\n\n%@",
                                 [self.dropView.currentIPA lastPathComponent], message],
                         nil, nil, nil);
+        }
     }
     
     [self scrollToBottom];
@@ -375,7 +381,9 @@
             options |= kSecurityManagerOptionsVerboseOutput;
         }
         
+        NSString *resultsMsg;
         if (self.dropView.selectedIPAs.count == 1) {
+            //only 1 IPA is selected for re-signing
             NSURL *appURL = [self.dropView.selectedIPAs objectAtIndex:0];
             
             [self setupDragState:DragStateReSign];
@@ -391,7 +399,23 @@
                 }
             }
         } else {
-            [self.sm signMultipleAppWithIdenity:selectedIdentity appPaths:self.dropView.selectedIPAs outputPath:outputURL options:options];
+            //multiple IPAs were selected to be re-signed 
+            NSArray *failedIpas = [self.sm signMultipleAppWithIdenity:selectedIdentity appPaths:self.dropView.selectedIPAs outputPath:outputURL options:options];
+            if (failedIpas.count) {
+                if (failedIpas.count == 1) {
+                    resultsMsg = [NSString stringWithFormat:@"The following app failed to re-sign:\n  %@", [failedIpas objectAtIndex:0]];
+                } else {
+                    resultsMsg = [NSString stringWithFormat:@"The following %ld apps failed to re-sign:", (unsigned long)failedIpas.count];
+                    for (NSURL *curFailedURL in failedIpas) {
+                        resultsMsg = [resultsMsg stringByAppendingFormat:@"\n  %@", curFailedURL.path];
+                    }
+                }
+                NSRunAlertPanel(@"Re-sign errors!", resultsMsg, nil, nil, nil);
+            } else {
+                resultsMsg = [NSString stringWithFormat:@"All %ld apps were successfully re-signed!", self.dropView.selectedIPAs.count];
+                //Everything went ok, so let the user know!
+                NSRunAlertPanel(@"Success",resultsMsg,nil, nil, nil);
+            }
         }
     }
 }
@@ -399,6 +423,7 @@
 - (IBAction)doneBtnPressed:(id)sender {
     self.dropView.selectedIPAs = nil;
     self.statusTextView.string = @"";
+    [self.multiAppInfoVC reset];
     [self setupDragState:DragStateInital];
 }
 

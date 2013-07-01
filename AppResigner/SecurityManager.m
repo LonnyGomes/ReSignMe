@@ -250,7 +250,9 @@ static SecurityManager *_certManager = nil;
     return str;
 }
 
-- (void) signMultipleAppWithIdenity:(NSString *)identity appPaths:(NSArray *)appPathsURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
+//
+// Re-sign multiple apps and return any ipa files that failed
+- (NSArray *) signMultipleAppWithIdenity:(NSString *)identity appPaths:(NSArray *)appPathsURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
     //add the multiple files mode flag in as an option
     optionFlags |= kSecurityManagerOptionsMultiFileMode;
     
@@ -258,11 +260,13 @@ static SecurityManager *_certManager = nil;
     NSString *reSignMessage;
     NSString *reSignFormattedMessage;
     NSUInteger curCount = 1;
+    NSMutableArray *failedURLs = [NSMutableArray array];
     for (NSURL *curAppPath in appPathsURL) {
         reSignFormattedMessage = @"";
         reSignMessage = [NSString stringWithFormat:
                          @"Re-signing %@ (%ld/%ld)",
                          [curAppPath lastPathComponent], curCount, (unsigned long)appPathsURL.count];
+        //draw line separators
         NSString *bannerStr = @"";
         for (int curChar = 0; curChar < reSignMessage.length; curChar++) {
             bannerStr = [bannerStr stringByAppendingString:@"\u2500"];
@@ -274,8 +278,14 @@ static SecurityManager *_certManager = nil;
 
         reSignedURL = [self signAppWithIdenity:identity appPath:curAppPath outputPath:outputPathURL options:optionFlags];
 
+        //if reSignedURL is null, the re-sign process failed
+        if (!reSignedURL) {
+            [failedURLs addObject:curAppPath];
+        }
         curCount++;
     }
+
+    return [NSArray arrayWithArray:failedURLs];
 }
 
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {

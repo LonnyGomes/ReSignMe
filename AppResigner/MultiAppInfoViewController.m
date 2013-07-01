@@ -52,6 +52,7 @@
     self.urlModels = nil;
     self.urlModels = [self genModelsWithURLs:ipaFileURLs];
     
+    [self.ipaTableView reloadData];
 }
 
 - (NSArray *) genModelsWithURLs:(NSArray *)urlsList {
