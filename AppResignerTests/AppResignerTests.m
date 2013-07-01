@@ -20,11 +20,16 @@
 //  You should have received a copy of the GNU General Public License
 //  along with ReSignMe.  If not, see <http://www.gnu.org/licenses/>.
 
-#import "AppResignerTests.h"
 #import "AppDelegate.h"
 #import "SecurityManager.h"
 #import "CertificateModel.h"
 #import <OCMock/OCMock.h>
+
+#import <SenTestingKit/SenTestingKit.h>
+
+@interface AppResignerTests : SenTestCase
+
+@end
 
 @interface AppDelegate(UnitTests)
 @property (nonatomic, strong) SecurityManager *sm;

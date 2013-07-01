@@ -25,26 +25,36 @@
 #import "SecurityManager.h"
 #import "AppUserDefaults.h"
 
+#define kMultiAppInfoXOffset 2
+#define kMultiAppInfoYOffset 5
+
+#define NOTIFICATION_HEADER_FONT @"Courier"
+#define NOTIFICATION_HEADER_FONT_SIZE 16
+
+#define OUTPUT_FONT @"Courier New"
+#define OUTPUT_FONT_SIZE 12
+
 @interface AppDelegate()
 - (void)scrollToBottom;
 - (void)displayNoValidCertError;
+- (void)setupGUI;
+- (void)setupFonts;
 @property (nonatomic, strong) SecurityManager *sm;
 @property (nonatomic, assign) BOOL isVerboseOutput;
 @property (nonatomic, assign) BOOL isShowingDevCerts;
+@property (nonatomic, strong) NSDictionary *defaultAttribStringOptions;
+@property (nonatomic, strong) NSDictionary *headerAttribStringOptions;
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-       
-    //place appInfoView where it should be
-    [self.boxOutline addSubview:self.appInfoVC.view];
+    //initialize GUI components
+    [self setupGUI];
     
-    [self.dropView setDelegate:self];
-    
-    //clear all default entries
-    [self.certPopDownBtn removeAllItems];
+    //initialize font optins
+    [self setupFonts];
     
     //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
@@ -73,6 +83,34 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)app {
     return YES;
+}
+
+- (void)setupGUI {
+    //place appInfoView where it should be
+    [self.boxOutline addSubview:self.appInfoVC.view];
+    
+    //place multiInfoView in inside box view with specified offsets
+    [self.boxOutline addSubview:self.multiAppInfoVC.view];
+    CGRect multiAppInfoVCFrame = [self.multiAppInfoVC.view frame];
+    multiAppInfoVCFrame.origin.x = kMultiAppInfoXOffset;
+    multiAppInfoVCFrame.origin.y = kMultiAppInfoYOffset;
+    [self.multiAppInfoVC.view setFrame:multiAppInfoVCFrame];
+    
+    [self.dropView setDelegate:self];
+    
+    //clear all default entries
+    [self.certPopDownBtn removeAllItems];
+    
+    //set default font for text output
+    [[self.statusTextView textStorage] setFont:[NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE]];
+}
+
+- (void)setupFonts {
+    NSFont *defaultFont = [NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE];
+    NSFont *headerFont  = [NSFont fontWithName:NOTIFICATION_HEADER_FONT size:NOTIFICATION_HEADER_FONT_SIZE];
+    
+    self.defaultAttribStringOptions = @{NSFontAttributeName:defaultFont};
+    self.headerAttribStringOptions  = @{NSFontAttributeName:headerFont};
 }
 
 - (void)initTextFields {
@@ -106,10 +144,19 @@
             [self.dragMessageTextField setHidden:NO];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
         case DragStateAppSelected:
+            [self.statusScrollView setHidden:YES];
+            [self.progressBar stopAnimation:self];
+            [self.dragMessageTextField setHidden:YES];
+            [self.boxOutline setHidden:NO];
+            [self.doneBtn setHidden:YES];
+            [self.reSignBtn setEnabled:YES];
+            break;
+        case DragStateMultiAppsSelected:
             [self.statusScrollView setHidden:YES];
             [self.progressBar stopAnimation:self];
             [self.dragMessageTextField setHidden:YES];
@@ -123,6 +170,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -132,6 +180,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -141,6 +190,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:YES];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:NO];
             [self.reSignBtn setEnabled:NO];
             break;
@@ -150,6 +200,7 @@
             [self.dragMessageTextField setHidden:YES];
             [self.boxOutline setHidden:NO];
             [self.appInfoVC reset];
+            [self.multiAppInfoVC reset];
             [self.doneBtn setHidden:YES];
             
             [self.dropView setHidden:YES];
@@ -247,29 +298,40 @@
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
     NSAttributedString *messageAttrb =
-        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"]];
-    
-    //NSLog(@"Got notification:%@", message);
-    //TODO:based on the notification type, format the text
+        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"] attributes:self.defaultAttribStringOptions];
     
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
+        //status notifications
+        //format a header message differently
+        if ([notification.userInfo valueForKey:kSecurityManagerNotificationHeaderFormatKey]) {
+                messageAttrb = [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"] attributes:self.headerAttribStringOptions];
+        }
+        
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
-        //TODO: format differently for output of commands
+        //output from a command
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
+        //success event
         [self setupDragState:DragStateReSignComplete];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
+        //error event
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
         NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
         [self setupDragState:DragStateRecoverableError];
         [self scrollToBottom];
-        NSRunAlertPanel(@"Signing Error",
+
+        //only display error if one IPA is selected to re-sign
+        //in the case of multiple IPAs, the errors should be
+        //suppressed until the end
+        if (self.dropView.selectedIPAs.count == 1) {
+            NSRunAlertPanel(@"Signing Error",
                         [NSString stringWithFormat:
                             @"The following error occurred when attempting to\nre-sign '%@':\n\n%@",
-                                [self.dropView.selectedIPA lastPathComponent], message],
+                                [self.dropView.currentIPA lastPathComponent], message],
                         nil, nil, nil);
+        }
     }
     
     [self scrollToBottom];
@@ -305,38 +367,63 @@
         NSRunAlertPanel(@"Not a valid Directory",
                         @"The path specified for the Output Directory is not a directory!",
                         nil, nil, nil);
-    } else if (!self.dropView.selectedIPA) {
+    } else if (!self.dropView.selectedIPAs) {
         NSRunAlertPanel(@"No ipa file specified",
                         @"No ipa has been selected. Please drag an ipa file into the app to re-sign it.",
                         nil, nil, nil);
     } else {
-        [self setupDragState:DragStateReSign];
         NSString *selectedIdentity = self.certPopDownBtn.selectedItem.title;
-        NSURL *appURL = [NSURL URLWithString:[self.dropView.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
+        NSURL *outputURL = [NSURL URLWithString:[self.pathTextField.stringValue stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
         
         NSInteger options = 0;
         if (self.isVerboseOutput) {
             options |= kSecurityManagerOptionsVerboseOutput;
         }
         
-        //everything is set up, lets re-sign the app
-        NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
-        if (outputFileURL) {
-            //if a non-nil value was returned, that means we successfully re-signed the ipa
-            NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
-            if (!panelResult) {
-                //open in finder option was selected so open in finder already
-                [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+        NSString *resultsMsg;
+        if (self.dropView.selectedIPAs.count == 1) {
+            //only 1 IPA is selected for re-signing
+            NSURL *appURL = [self.dropView.selectedIPAs objectAtIndex:0];
+            
+            [self setupDragState:DragStateReSign];
+            
+            //everything is set up, lets re-sign the app
+            NSURL *outputFileURL = [self.sm signAppWithIdenity:selectedIdentity appPath:appURL outputPath:outputURL options:options];
+            if (outputFileURL) {
+                //if a non-nil value was returned, that means we successfully re-signed the ipa
+                NSInteger panelResult = NSRunAlertPanel(@"Success", @"The ipa was successfully re-signed!", @"OK", @"Open in Finder", nil);
+                if (!panelResult) {
+                    //open in finder option was selected so open in finder already
+                    [[NSWorkspace sharedWorkspace] activateFileViewerSelectingURLs:@[ outputFileURL ]];
+                }
+            }
+        } else {
+            //multiple IPAs were selected to be re-signed 
+            NSArray *failedIpas = [self.sm signMultipleAppWithIdenity:selectedIdentity appPaths:self.dropView.selectedIPAs outputPath:outputURL options:options];
+            if (failedIpas.count) {
+                if (failedIpas.count == 1) {
+                    resultsMsg = [NSString stringWithFormat:@"The following app failed to re-sign:\n  %@", [failedIpas objectAtIndex:0]];
+                } else {
+                    resultsMsg = [NSString stringWithFormat:@"The following %ld apps failed to re-sign:", (unsigned long)failedIpas.count];
+                    for (NSURL *curFailedURL in failedIpas) {
+                        resultsMsg = [resultsMsg stringByAppendingFormat:@"\n  %@", curFailedURL.path];
+                    }
+                }
+                NSRunAlertPanel(@"Re-sign errors!", resultsMsg, nil, nil, nil);
+            } else {
+                resultsMsg = [NSString stringWithFormat:@"All %ld apps were successfully re-signed!", self.dropView.selectedIPAs.count];
+                //Everything went ok, so let the user know!
+                NSRunAlertPanel(@"Success",resultsMsg,nil, nil, nil);
             }
         }
     }
 }
 
 - (IBAction)doneBtnPressed:(id)sender {
-    self.dropView.selectedIPA = nil;
+    self.dropView.selectedIPAs = nil;
     self.statusTextView.string = @"";
+    [self.multiAppInfoVC reset];
     [self setupDragState:DragStateInital];
 }
 
@@ -346,14 +433,20 @@
     openDlg.canChooseDirectories = NO;
     openDlg.canChooseFiles = YES;
     openDlg.canCreateDirectories = NO;
-    openDlg.allowsMultipleSelection = NO;
+    openDlg.allowsMultipleSelection = YES;
     openDlg.allowedFileTypes = @[@"ipa"]; //TODO: shouldn't be hardcoded
     
     if ( [openDlg runModal] == NSOKButton ) {
-        self.dropView.selectedIPA = openDlg.URL.path;
-        [self setupDragState:DragStateAppSelected];
+        self.dropView.selectedIPAs = [NSArray arrayWithArray:openDlg.URLs];
+
+        if (self.dropView.selectedIPAs.count == 1) {
+            [self setupDragState:DragStateAppSelected];
+            [self.appInfoVC loadIpaFile:openDlg.URL];
+        } else {
+            [self setupDragState:DragStateMultiAppsSelected];
+            [self.multiAppInfoVC loadIpaFilesList:self.dropView.selectedIPAs];
+        }
     
-        [self.appInfoVC loadIpaFile:openDlg.URL];
     }
 
 }
@@ -399,6 +492,12 @@
     [self setupDragState:DragStateAppSelected];
     
     [self.appInfoVC loadIpaFile:ipaPathURL];
+}
+
+- (void)appDropView:(AppDropView *)appDropView filesWereDraggedIntoView:(NSArray *)ipaPathURLs {
+    [self setupDragState:DragStateMultiAppsSelected];
+    
+    [self.multiAppInfoVC loadIpaFilesList:ipaPathURLs];
 }
 
 - (void)appDropView:(AppDropView *)appDropView invalidFileWasDraggedIntoView:(NSURL *)path {
