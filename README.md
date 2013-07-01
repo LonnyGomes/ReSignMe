@@ -21,11 +21,12 @@ This app is currently in beta mode. I am in search of volunteers to help test th
   * installed iPhone distribution and/or developer certificates
 
 ## Features ##
-  * drag and drop an IPA file
-  * auto detect of Xcode
+  * drag and drop interface
+  * re-sign multipe apps as a batch process
+  * auto detection of Xcode
   * automatically loads iPhone certificates from Keychain
   * verbose output options
-  * open in finder after re-signing
+  * open in finder option after re-signing
 
 ## Roadmap ##
   * adding an "Advanced" mode that contains the following features
