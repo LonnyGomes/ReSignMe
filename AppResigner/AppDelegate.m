@@ -28,42 +28,33 @@
 #define kMultiAppInfoXOffset 2
 #define kMultiAppInfoYOffset 5
 
-#define NOTIFICATION_HEADER_FONT @"Monaco"
-#define NOTIFICATION_HEADER_FONT_SIZE 14
+#define NOTIFICATION_HEADER_FONT @"Courier"
+#define NOTIFICATION_HEADER_FONT_SIZE 16
 
 #define OUTPUT_FONT @"Courier New"
-#define OUTPUT_FONT_SIZE 20
+#define OUTPUT_FONT_SIZE 12
 
 @interface AppDelegate()
 - (void)scrollToBottom;
 - (void)displayNoValidCertError;
+- (void)setupGUI;
+- (void)setupFonts;
 @property (nonatomic, strong) SecurityManager *sm;
 @property (nonatomic, assign) BOOL isVerboseOutput;
 @property (nonatomic, assign) BOOL isShowingDevCerts;
+@property (nonatomic, strong) NSDictionary *defaultAttribStringOptions;
+@property (nonatomic, strong) NSDictionary *headerAttribStringOptions;
 @end
 
 @implementation AppDelegate
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
-       
-    //place appInfoView where it should be
-    [self.boxOutline addSubview:self.appInfoVC.view];
+    //initialize GUI components
+    [self setupGUI];
     
-    //place multiInfoView in inside box view with specified offsets
-    [self.boxOutline addSubview:self.multiAppInfoVC.view];
-    CGRect multiAppInfoVCFrame = [self.multiAppInfoVC.view frame];
-    multiAppInfoVCFrame.origin.x = kMultiAppInfoXOffset;
-    multiAppInfoVCFrame.origin.y = kMultiAppInfoYOffset;
-    [self.multiAppInfoVC.view setFrame:multiAppInfoVCFrame];
-    
-    [self.dropView setDelegate:self];
-    
-    //clear all default entries
-    [self.certPopDownBtn removeAllItems];
-    
-    //set default font for text output
-    [self.statusTextView setFont:[NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE]];
+    //initialize font optins
+    [self setupFonts];
     
     //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
@@ -92,6 +83,34 @@
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)app {
     return YES;
+}
+
+- (void)setupGUI {
+    //place appInfoView where it should be
+    [self.boxOutline addSubview:self.appInfoVC.view];
+    
+    //place multiInfoView in inside box view with specified offsets
+    [self.boxOutline addSubview:self.multiAppInfoVC.view];
+    CGRect multiAppInfoVCFrame = [self.multiAppInfoVC.view frame];
+    multiAppInfoVCFrame.origin.x = kMultiAppInfoXOffset;
+    multiAppInfoVCFrame.origin.y = kMultiAppInfoYOffset;
+    [self.multiAppInfoVC.view setFrame:multiAppInfoVCFrame];
+    
+    [self.dropView setDelegate:self];
+    
+    //clear all default entries
+    [self.certPopDownBtn removeAllItems];
+    
+    //set default font for text output
+    [[self.statusTextView textStorage] setFont:[NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE]];
+}
+
+- (void)setupFonts {
+    NSFont *defaultFont = [NSFont fontWithName:OUTPUT_FONT size:OUTPUT_FONT_SIZE];
+    NSFont *headerFont  = [NSFont fontWithName:NOTIFICATION_HEADER_FONT size:NOTIFICATION_HEADER_FONT_SIZE];
+    
+    self.defaultAttribStringOptions = @{NSFontAttributeName:defaultFont};
+    self.headerAttribStringOptions  = @{NSFontAttributeName:headerFont};
 }
 
 - (void)initTextFields {
@@ -279,26 +298,24 @@
 - (void)processSecuirtyManagerEvent:(NSNotification *)notification {
     NSString *message = [notification.userInfo valueForKey:kSecurityManagerNotificationKey];
     NSAttributedString *messageAttrb =
-        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"]];
-    
-    //NSLog(@"Got notification:%@", message);
-    //TODO:based on the notification type, format the text
+        [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"] attributes:self.defaultAttribStringOptions];
     
     if ([notification.name isEqualToString:kSecurityManagerNotificationEvent]) {
-        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
-
+        //status notifications
         //format a header message differently
         if ([notification.userInfo valueForKey:kSecurityManagerNotificationHeaderFormatKey]) {
-            NSRange messageRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
-
-            [self.statusTextView setFont:[NSFont fontWithName:NOTIFICATION_HEADER_FONT size:NOTIFICATION_HEADER_FONT_SIZE] range:messageRange];
+                messageAttrb = [[NSAttributedString alloc] initWithString:[message stringByAppendingString:@"\n"] attributes:self.headerAttribStringOptions];
         }
+        
+        [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventOutput]) {
-        //TODO: format differently for output of commands
+        //output from a command
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventComplete]) {
+        //success event
         [self setupDragState:DragStateReSignComplete];
     } else if ([notification.name isEqualToString:kSecurityManagerNotificationEventError]) {
+        //error event
         [[self.statusTextView textStorage] appendAttributedString:messageAttrb];
         NSRange errorRange = NSMakeRange(self.statusTextView.string.length - message.length-1, message.length);
         [self.statusTextView setTextColor:[NSColor redColor] range:errorRange];
@@ -374,7 +391,6 @@
                 }
             }
         } else {
-            NSLog(@"TODO: re-sign multiple apps");
             [self.sm signMultipleAppWithIdenity:selectedIdentity appPaths:self.dropView.selectedIPAs outputPath:outputURL options:options];
         }
     }
