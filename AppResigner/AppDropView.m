@@ -24,7 +24,7 @@
 #import "AppDropView.h"
 @interface AppDropView()
 - (BOOL)isValidForFileAtPath:(NSString *)path;
-- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender;
+- (NSArray *)getIpaFilenamesFromPasteBoard:(id<NSDraggingInfo>)sender;
 @property (nonatomic, assign) BOOL isValidFile;
 @end
 
@@ -43,6 +43,14 @@
     return self;
 }
 
+- (NSString *)currentIPA {
+    //TODO: this currently is a stub method
+    if (self.selectedIPAs) {
+        return [self.selectedIPAs objectAtIndex:0];
+    }
+    
+    return nil;
+}
 
 #pragma mark - ipa valididy checks
 - (BOOL)isValidForFileAtPath:(NSString *)path {
@@ -53,15 +61,22 @@
     return NO;
 }
 
-- (NSString *)getFilenameFromPasteBoard:(id<NSDraggingInfo>)sender {
-    NSString *path = nil;
+- (NSArray *)getIpaFilenamesFromPasteBoard:(id<NSDraggingInfo>)sender {
+    NSArray *paths = nil;
     NSArray *filenames = [[sender draggingPasteboard] propertyListForType:NSFilenamesPboardType];
+    NSMutableArray *validFiles = [NSMutableArray array];
+    
+    for (NSString *curFilename in filenames) {
+        if ([self isValidForFileAtPath:curFilename]) {
+            [validFiles addObject:curFilename];
+        }
+    }
     //For now, just handle one file
     if (filenames.count > 0) {
-        path = [filenames objectAtIndex:0];
+        paths = [NSArray arrayWithArray:validFiles];
     }
     
-    return path;
+    return paths;
 }
 
 #pragma mark - cursor methods
@@ -80,9 +95,12 @@
 
 #pragma mark - drag protocol methods
 - (NSDragOperation)draggingEntered:(id<NSDraggingInfo>)sender {
-    NSString *path = [self getFilenameFromPasteBoard:sender];
+    NSArray *paths = [self getIpaFilenamesFromPasteBoard:sender];
     self.isInDragState = YES;
-    self.isValidFile = [self isValidForFileAtPath:path];
+
+    //if we have at least one value, the drag is valid
+    self.isValidFile = (paths.count) ? YES : NO;
+    
     [self setNeedsDisplay:YES];
     [self activateDragCursor];
     return NSDragOperationGeneric;
@@ -112,20 +130,20 @@
 }
 
 - (BOOL)performDragOperation:(id<NSDraggingInfo>)sender {
-    NSString *path = [self getFilenameFromPasteBoard:sender];
+    NSArray *paths = [self getIpaFilenamesFromPasteBoard:sender];
    
-    if ([self isValidForFileAtPath:path]) {
+    if (paths.count) {
         return YES;
     } else {
         self.isInDragState = NO;
         [self setNeedsDisplay:YES];
         
-        self.selectedIPA = nil;
+        self.selectedIPAs = nil;
         
         NSRunAlertPanel(@"Invalid file", @"Please select an ipa. It can be dragged into the application.", nil, nil, nil);
         
         if (self.delegate) {
-            [self.delegate performSelector:@selector(appDropView:invalidFileWasDraggedIntoView:) withObject:self withObject:path];
+            [self.delegate performSelector:@selector(appDropView:invalidFileWasDraggedIntoView:) withObject:self withObject:nil];
         }
         return NO;
     }    
@@ -136,11 +154,27 @@
     self.isInDragState = NO;
     [self setNeedsDisplay:YES];
     
-    self.selectedIPA = [self getFilenameFromPasteBoard:sender];
+    NSArray *paths  = [self getIpaFilenamesFromPasteBoard:sender];
     
-    if (self.delegate && self.selectedIPA) {
-        NSURL *ipaURL = [NSURL URLWithString:[self.selectedIPA stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
-        [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:ipaURL];
+    if (self.delegate && paths) {
+        if (paths.count == 1) {
+            NSURL *ipaURL = [NSURL URLWithString:[[paths objectAtIndex:0] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+            
+            self.selectedIPAs = @[ ipaURL];
+            [self.delegate performSelector:@selector(appDropView:fileWasDraggedIntoView:) withObject:self withObject:ipaURL];
+        } else {
+            NSMutableArray *urls = [NSMutableArray array];
+            NSURL *curIpaURL;
+            for (NSString *curIpaFilename in paths) {
+                curIpaURL = [NSURL URLWithString:[curIpaFilename stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                [urls addObject:curIpaURL];
+            }
+            
+            self.selectedIPAs = [NSArray arrayWithArray:urls];
+
+            [self.delegate performSelector:@selector(appDropView:filesWereDraggedIntoView:) withObject:self withObject:urls];
+
+        }
     }
 }
 

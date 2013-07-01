@@ -30,7 +30,9 @@
 @interface AppDropView : NSView <NSDraggingDestination>
 - (void)activateDragCursor;
 - (void)deactivetDragCursor;
-@property (nonatomic, strong) NSString *selectedIPA;
+@property (nonatomic, strong) NSArray *selectedIPAs;
 @property (nonatomic, assign) BOOL isInDragState;
 @property (nonatomic, assign) id<AppDropDelegate> delegate;
+
+- (NSString *) currentIPA;
 @end

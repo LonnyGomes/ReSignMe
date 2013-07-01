@@ -49,6 +49,7 @@
 - (BOOL)copyIpaBundleWithSrcURL:(NSURL *)srcUrl destinationURL:(NSURL *)destUrl;
 - (NSString *)cleanPath:(NSURL *)path;
 - (void)postNotifcation:(SMNotificationType *)type withMessage:(NSString *)message;
+- (void)postNotifcation:(SMNotificationType *)type withHeaderMessage:(NSString *)message;
 @end
 
 @implementation SecurityManager
@@ -174,6 +175,15 @@ static SecurityManager *_certManager = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:type object:self userInfo:[NSDictionary dictionaryWithObject:message forKey:kSecurityManagerNotificationKey]];
 }
 
+- (void)postNotifcation:(SMNotificationType *)type withHeaderMessage:(NSString *)message {
+    NSDictionary *dict = @{
+                           kSecurityManagerNotificationKey:message,
+                           kSecurityManagerNotificationHeaderFormatKey: @YES
+                           };
+    [[NSNotificationCenter defaultCenter] postNotificationName:type object:self
+                                                      userInfo:dict];
+}
+
 - (NSURL *)genTempPath {
     NSFileHandle *file;
     NSPipe *pipe = [NSPipe pipe];
@@ -240,6 +250,44 @@ static SecurityManager *_certManager = nil;
     return str;
 }
 
+//
+// Re-sign multiple apps and return any ipa files that failed
+- (NSArray *) signMultipleAppWithIdenity:(NSString *)identity appPaths:(NSArray *)appPathsURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags {
+    //add the multiple files mode flag in as an option
+    optionFlags |= kSecurityManagerOptionsMultiFileMode;
+    
+    NSURL *reSignedURL;
+    NSString *reSignMessage;
+    NSString *reSignFormattedMessage;
+    NSUInteger curCount = 1;
+    NSMutableArray *failedURLs = [NSMutableArray array];
+    for (NSURL *curAppPath in appPathsURL) {
+        reSignFormattedMessage = @"";
+        reSignMessage = [NSString stringWithFormat:
+                         @"Re-signing %@ (%ld/%ld)",
+                         [curAppPath lastPathComponent], curCount, (unsigned long)appPathsURL.count];
+        //draw line separators
+        NSString *bannerStr = @"";
+        for (int curChar = 0; curChar < reSignMessage.length; curChar++) {
+            bannerStr = [bannerStr stringByAppendingString:@"\u2500"];
+        }
+        reSignFormattedMessage = [NSString stringWithFormat:@"\n%@\n%@\n%@", bannerStr, reSignMessage, bannerStr];
+
+        [self postNotifcation:kSecurityManagerNotificationEvent
+                  withHeaderMessage:reSignFormattedMessage];
+
+        reSignedURL = [self signAppWithIdenity:identity appPath:curAppPath outputPath:outputPathURL options:optionFlags];
+
+        //if reSignedURL is null, the re-sign process failed
+        if (!reSignedURL) {
+            [failedURLs addObject:curAppPath];
+        }
+        curCount++;
+    }
+
+    return [NSArray arrayWithArray:failedURLs];
+}
+
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL {
     return [self signAppWithIdenity:identity appPath:appPathURL outputPath:outputPathURL options:0];
 }
@@ -250,6 +298,7 @@ static SecurityManager *_certManager = nil;
     
     //parse option flags
     BOOL isVerboseOutput = OPTION_IS_VERBOSE(optionFlags);
+    BOOL isMultiFileMode = OPTION_IS_MULTI_FILE(optionFlags);
     
     //retrieve the ipa name
     NSString *ipaName = [appPathURL lastPathComponent];
@@ -318,12 +367,15 @@ static SecurityManager *_certManager = nil;
     if (payloadError) {
         NSLog(@"Could not open: %@", [payloadPathURL path]);
         
-        [self postNotifcation:kSecurityManagerNotificationEventError
-                  withMessage:[NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath]];
+        NSString *unzipErrorStr = [NSString stringWithFormat:@"unzip: failed to unzip %@ to %@!", tempIpaSrcPath, tempIpaDstPath];
+        NSString *notificationStr = ERROR_EVENT(isMultiFileMode);
+        [self postNotifcation:notificationStr withMessage:unzipErrorStr];
+        
         [self purgeTempFolderAtPath:tmpPathURL];
         return nil;
     } else if (payloadPathContents.count != 1) {
-        [self postNotifcation:kSecurityManagerNotificationEventError
+        NSString *notificationStr = ERROR_EVENT(isMultiFileMode);
+        [self postNotifcation:notificationStr
                   withMessage:@"Unexpected output in Payloads directory of the IPA!"];
         
         [self purgeTempFolderAtPath:tmpPathURL];

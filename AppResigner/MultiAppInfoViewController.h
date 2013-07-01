@@ -1,8 +1,8 @@
 //
-//  ReSignMeTests.h
-//  ReSignMeTests
+//  MultiAppInfoViewController.h
+//  AppResigner
 //
-//  Created by Carpe Lucem Media Group on 2/9/13.
+//  Created by Lonny Gomes on 6/22/13.
 //  Copyright (c) 2013 Carpe Lucem Media Group. All rights reserved.
 //
 //  This file is part of ReSignMe.
@@ -20,8 +20,18 @@
 //  You should have received a copy of the GNU General Public License
 //  along with ReSignMe.  If not, see <http://www.gnu.org/licenses/>.
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <Cocoa/Cocoa.h>
 
-@interface AppResignerTests : SenTestCase
+#define kMultiAppInfoTableCellFilename @"AppInfoCellFilename"
+#define kMultiAppInfoTableCellDate @"AppInfoCellDate"
+#define kMultiAppInfoTableCellFileSize @"AppInfoCellFileSize"
+#define kMultiAppInfoTableCellStatus @"AppInfoCellStatus"
+
+@interface MultiAppInfoViewController : NSViewController <NSTableViewDataSource, NSTableViewDelegate>
+
+- (void)loadIpaFilesList:(NSArray *)ipaFileURLs;
+- (void)reset;
+
+@property (weak) IBOutlet NSTableView *ipaTableView;
 
 @end

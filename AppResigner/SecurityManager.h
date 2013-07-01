@@ -24,18 +24,25 @@
 #import <Foundation/Foundation.h>
 
 #define kSecurityManagerNotificationKey @"notificationDictKey"
+#define kSecurityManagerNotificationHeaderFormatKey @"notificationDictIsHeaderKey"
 #define kSecurityManagerNotificationEvent @"SecurityManagerNotificationEvent"
 #define kSecurityManagerNotificationEventOutput @"SecurityManagerNotificationEventOutput"
 #define kSecurityManagerNotificationEventComplete @"SecurityManagerNotificationEventComplete"
+#define kSecurityManagerNotificationMultiFileEventComplete @"SecurityManagerNotificationMultiFileEventComplete"
 #define kSecurityManagerNotificationEventError @"SecurityManagerNotificationEventError"
+#define kSecurityManagerNotificationMultiFileEventError @"SecurityManagerNotificationMultiFileEventError"
 #define kSecurityManageriPhoneSubjectNameUTF8CStr "iPhone D"
 #define kSecurityManageriPhoneDistribSubjectNameUTF8CStr "iPhone Distribution:"
 #define kSecurityManagerXcodeBundleName @"com.apple.dt.Xcode"
 
 //options used for security manager
 #define kSecurityManagerOptionsVerboseOutput 1
+#define kSecurityManagerOptionsMultiFileMode 2
 
-#define OPTION_IS_VERBOSE(flags) (flags & 1)
+#define OPTION_IS_VERBOSE(flags) (flags & kSecurityManagerOptionsVerboseOutput)
+#define OPTION_IS_MULTI_FILE(flags) ((flags & kSecurityManagerOptionsMultiFileMode) >> 1)
+
+#define ERROR_EVENT(isMulti) (isMulti ? kSecurityManagerNotificationMultiFileEventError : kSecurityManagerNotificationEventError)
 
 typedef NSString SMNotificationType;
 
@@ -46,4 +53,5 @@ typedef NSString SMNotificationType;
 - (NSArray *)getDistributionAndDevCertificatesList;
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL;
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags;
+- (NSArray *) signMultipleAppWithIdenity:(NSString *)identity appPaths:(NSArray *)appPathsURL outputPath:(NSURL *)outputPathURL options:(NSInteger)optionFlags;
 @end

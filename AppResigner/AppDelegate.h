@@ -25,14 +25,16 @@
 #import "AppDropView.h"
 #import "AppDropDelegate.h"
 #import "AppInfoViewController.h"
+#import "MultiAppInfoViewController.h"
 
 #define kAppResignerDefaultOutputURL [NSURL URLWithString:@"~/Desktop"]
 
 typedef enum {
     DragStateInital, //inital state when app opens
     DragStateAppSelected, //state when an app is selected to resign
-    DragStateReSign, //state when app is getting resigned
-    DragStateReSignComplete,
+    DragStateMultiAppsSelected, //state when multiple apps have been selected
+    DragStateReSign, //state when app is getting re-signed
+    DragStateReSignComplete, //the app re-signing was successful
     DragStateRecoverableError, //the user still can recover from this state
     DragStateFatalError //there is no recovering from this state
 } DragState;
@@ -72,6 +74,7 @@ typedef enum {
 @property (weak) IBOutlet NSBox *boxOutline;
 @property (weak) IBOutlet NSButton *reSignBtn;
 @property (unsafe_unretained) IBOutlet AppInfoViewController *appInfoVC;
+@property (unsafe_unretained) IBOutlet MultiAppInfoViewController *multiAppInfoVC;
 @property (weak) IBOutlet NSButton *doneBtn;
 @property (weak) IBOutlet NSButton *browseBtn;
 @property (weak) IBOutlet NSMenuItem *showDevCertsMenuItem;
