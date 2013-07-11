@@ -36,11 +36,13 @@
 #define kSecurityManagerXcodeBundleName @"com.apple.dt.Xcode"
 
 //options used for security manager
-#define kSecurityManagerOptionsVerboseOutput 1
-#define kSecurityManagerOptionsMultiFileMode 2
+#define kSecurityManagerOptionsVerboseOutput    1
+#define kSecurityManagerOptionsMultiFileMode    2
+#define kSecurityManagerOptionsRenameApps       4
 
 #define OPTION_IS_VERBOSE(flags) (flags & kSecurityManagerOptionsVerboseOutput)
 #define OPTION_IS_MULTI_FILE(flags) ((flags & kSecurityManagerOptionsMultiFileMode) >> 1)
+#define OPTION_SHOULD_RENAME_APPS(flags) ((flags & kSecurityManagerOptionsRenameApps) >> 2)
 
 #define ERROR_EVENT(isMulti) (isMulti ? kSecurityManagerNotificationMultiFileEventError : kSecurityManagerNotificationEventError)
 

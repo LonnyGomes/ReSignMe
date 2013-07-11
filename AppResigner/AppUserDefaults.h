@@ -12,5 +12,6 @@
 #define kAppDefaultsOutputDir @"appOutputDir"
 #define kAppDefaultsShowDevCerts @"appShowDevCertificates"
 #define kAppDefaultsIsVerboseOutput @"appisVerboseOutput"
+#define kAppDefaultsShouldRenameApps @"appShouldRenameApps"
 
 #endif

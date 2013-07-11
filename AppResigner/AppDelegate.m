@@ -42,6 +42,7 @@
 @property (nonatomic, strong) SecurityManager *sm;
 @property (nonatomic, assign) BOOL isVerboseOutput;
 @property (nonatomic, assign) BOOL isShowingDevCerts;
+@property (nonatomic, assign) BOOL shouldRenameApps;
 @property (nonatomic, strong) NSDictionary *defaultAttribStringOptions;
 @property (nonatomic, strong) NSDictionary *headerAttribStringOptions;
 @end
@@ -134,6 +135,17 @@
     //read in flag for if verbosity mode is enabled and set in menu
     self.isVerboseOutput = [defaults boolForKey:kAppDefaultsIsVerboseOutput];
     [self.verboseOutputMenuItem setState:self.isVerboseOutput];
+    
+    //determine if the re-signed app should be renamed after re-signed
+    if ([defaults objectForKey:kAppDefaultsShouldRenameApps] == nil) {
+        //if the key has not been set, let's default the value to true
+        [defaults setBool:YES forKey:kAppDefaultsShouldRenameApps];
+        self.shouldRenameApps = YES;
+    } else {
+        self.shouldRenameApps = [defaults boolForKey:kAppDefaultsShouldRenameApps];
+    }
+    [self.renameAppsMenuItem setState:self.shouldRenameApps];
+    
 }
 
 - (void)setupDragState:(DragState)dragState {
@@ -380,6 +392,9 @@
         if (self.isVerboseOutput) {
             options |= kSecurityManagerOptionsVerboseOutput;
         }
+        if (self.shouldRenameApps) {
+            options |= kSecurityManagerOptionsRenameApps;
+        }
         
         NSString *resultsMsg;
         if (self.dropView.selectedIPAs.count == 1) {
@@ -485,6 +500,19 @@
     if (!wasSuccess) {
         [self displayNoValidCertError];
     }
+}
+
+- (IBAction)renameAppsMenuItemInvoked:(id)sender {
+    NSMenuItem *menuItem = (NSMenuItem *)sender;
+    
+    //toggle rename flag and store it's value
+    self.shouldRenameApps = (menuItem.state+1) % 2;
+    
+    [menuItem setState:self.shouldRenameApps];
+    
+    //we've retrieved the value, now set to user defaults
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setBool:self.shouldRenameApps forKey:kAppDefaultsShouldRenameApps];
 }
 
 #pragma mark - AppDropView delegate methods

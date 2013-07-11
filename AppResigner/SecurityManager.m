@@ -297,8 +297,9 @@ static SecurityManager *_certManager = nil;
     NSPipe *pipe = [NSPipe pipe];
     
     //parse option flags
-    BOOL isVerboseOutput = OPTION_IS_VERBOSE(optionFlags);
-    BOOL isMultiFileMode = OPTION_IS_MULTI_FILE(optionFlags);
+    BOOL isVerboseOutput  = OPTION_IS_VERBOSE(optionFlags);
+    BOOL isMultiFileMode  = OPTION_IS_MULTI_FILE(optionFlags);
+    BOOL shouldRenameApps = OPTION_SHOULD_RENAME_APPS(optionFlags);
     
     //retrieve the ipa name
     NSString *ipaName = [appPathURL lastPathComponent];
@@ -426,7 +427,7 @@ static SecurityManager *_certManager = nil;
               withMessage:codesignOutput];
     
     //Repackage app
-    NSString *resignedAppName = [[ipaName stringByDeletingPathExtension] stringByAppendingFormat:@"%@.ipa",kSecurityManagerRenameStr];
+    NSString *resignedAppName = [[ipaName stringByDeletingPathExtension] stringByAppendingFormat:@"%@.ipa",(shouldRenameApps) ?kSecurityManagerRenameStr : @""];
     NSString *zipOutputPath = [[outputPathURL URLByAppendingPathComponent:resignedAppName] path];
     NSURL *zipOutputPathURL = [NSURL fileURLWithPath:zipOutputPath];//This must be a file URL as it will be returned in the method
     

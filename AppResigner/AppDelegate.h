@@ -60,6 +60,7 @@ typedef enum {
 - (IBAction)openMenuItemInvoked:(id)sender;
 - (IBAction)verboseOptionMenuItemInvoked:(id)sender;
 - (IBAction)showDevCertsMenuItemInvoked:(id)sender;
+- (IBAction)renameAppsMenuItemInvoked:(id)sender;
 
 
 //Interface builder properties
@@ -79,6 +80,7 @@ typedef enum {
 @property (weak) IBOutlet NSButton *browseBtn;
 @property (weak) IBOutlet NSMenuItem *showDevCertsMenuItem;
 @property (weak) IBOutlet NSMenuItem *verboseOutputMenuItem;
+@property (weak) IBOutlet NSMenuItem *renameAppsMenuItem;
 
 
 
