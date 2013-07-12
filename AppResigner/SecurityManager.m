@@ -64,16 +64,12 @@ static SecurityManager *_certManager = nil;
 - (id)init {
     self = [super init];
     if (self) {
-        //if we can set up
-        if (![self setupDependencies]) {
-            return nil;
-        }
-        
+
     }
     return self;
 }
 
-- (BOOL)setupDependencies {
+- (SecurityManagerError)checkDepenencies {
     NSString* xCodePath = [ [ NSWorkspace sharedWorkspace ]
                            absolutePathForAppBundleWithIdentifier: kSecurityManagerXcodeBundleName ];
     
@@ -102,7 +98,21 @@ static SecurityManager *_certManager = nil;
         }
     }
     
-    return (self.pathForCodesign && self.pathForCodesignAlloc);
+    SecurityManagerError errorCodes = 0;
+    
+    if (!xCodePath) {
+        errorCodes |= SecurityManagerErrorXcodeNotFound;
+    }
+    
+    if (!self.pathForCodesign) {
+        errorCodes |= SecurityManagerErrorCodesignNotFound;
+    }
+    
+    if (!self.pathForCodesignAlloc) {
+        errorCodes |= SecurityManagerErrorCodesignAllocNotFound;
+    }
+    
+    return errorCodes;
 }
 
 - (NSArray *)getDistributionAndDevCertificatesList {

@@ -34,6 +34,13 @@
 #define OUTPUT_FONT @"Courier New"
 #define OUTPUT_FONT_SIZE 12
 
+//TODO: think about localization in the future
+#define kAppDelMsgStrDepError @"Xcode and the 'Command line tools for Xcode' must be installed in order to use ReSignMe"
+#define kAppDelMsgStrXcodeDepError @"Xcode was not found on the system"
+#define kAppDelMsgStrCodesignDepError @"codesign was not found"
+#define kAppDelMsgStrCodesignAllocDepError @"codesign_alloc was not found! symlink to /usr/bin if it is installed"
+
+
 @interface AppDelegate()
 - (void)scrollToBottom;
 - (void)displayNoValidCertError;
@@ -57,14 +64,33 @@
     //initialize font optins
     [self setupFonts];
     
-    //ensure security manager starts w/o dependency problems
     self.sm = [SecurityManager defaultManager];
-    if (!self.sm) {
+    //ensure security manager has all depenencies before going further
+    SecurityManagerError dependenceErrs = [self.sm checkDepenencies];
+    
+    if (dependenceErrs != 0) {
         [self setupDragState:DragStateFatalError];
-        NSRunAlertPanel(@"Dependency Error",
-                        @"Could not find an installation of XCode or the command line tools!\n"
-                        "The Xcode command line tools must be installed to resign you app. Please either install Xcode or the 'Command line tools for Xcode' located at the following url:\n\n"
-                        "https://developer.apple.com/downloads/index.action",
+        
+        //we have some dependency problems, alert the user!
+        NSString *errorStr = @"Failed with following errors:\n";
+        
+        if (SEC_MAN_ERROR_XCODE(dependenceErrs)) {
+            errorStr = [errorStr stringByAppendingFormat:@"\n  * %@", kAppDelMsgStrXcodeDepError];
+        }
+        
+        if (SEC_MAN_ERROR_CODESIGN(dependenceErrs)) {
+            errorStr = [errorStr stringByAppendingFormat:@"\n  * %@", kAppDelMsgStrCodesignDepError];
+        }
+        
+        if (SEC_MAN_ERROR_CODESIGN_ALLOC(dependenceErrs)) {
+            errorStr = [errorStr stringByAppendingFormat:@"\n  * %@", kAppDelMsgStrCodesignAllocDepError];
+        }
+        
+        errorStr = [errorStr stringByAppendingFormat:@"\n\n%@\n", kAppDelMsgStrDepError];
+        
+        
+        NSRunAlertPanel(@"Dependency Errors",
+                        errorStr,
                         nil, nil, nil);
         return;
     }

@@ -40,9 +40,19 @@
 #define kSecurityManagerOptionsMultiFileMode    2
 #define kSecurityManagerOptionsRenameApps       4
 
+typedef enum {
+    SecurityManagerErrorXcodeNotFound = 1 << 8,
+    SecurityManagerErrorCodesignNotFound = 2 << 8,
+    SecurityManagerErrorCodesignAllocNotFound = 4 << 8
+} SecurityManagerError;
+
 #define OPTION_IS_VERBOSE(flags) (flags & kSecurityManagerOptionsVerboseOutput)
 #define OPTION_IS_MULTI_FILE(flags) ((flags & kSecurityManagerOptionsMultiFileMode) >> 1)
 #define OPTION_SHOULD_RENAME_APPS(flags) ((flags & kSecurityManagerOptionsRenameApps) >> 2)
+
+#define SEC_MAN_ERROR_XCODE(flags) (SecurityManagerErrorXcodeNotFound == (SecurityManagerErrorXcodeNotFound & flags))
+#define SEC_MAN_ERROR_CODESIGN(flags) (SecurityManagerErrorCodesignNotFound == (SecurityManagerErrorCodesignNotFound & flags))
+#define SEC_MAN_ERROR_CODESIGN_ALLOC(flags) (SecurityManagerErrorCodesignAllocNotFound == (SecurityManagerErrorCodesignAllocNotFound & flags))
 
 #define ERROR_EVENT(isMulti) (isMulti ? kSecurityManagerNotificationMultiFileEventError : kSecurityManagerNotificationEventError)
 
@@ -50,7 +60,7 @@ typedef NSString SMNotificationType;
 
 @interface SecurityManager : NSObject
 + (SecurityManager *) defaultManager;
-- (BOOL)setupDependencies;
+- (SecurityManagerError)checkDepenencies;
 - (NSArray *)getDistributionCertificatesList;
 - (NSArray *)getDistributionAndDevCertificatesList;
 - (NSURL *)signAppWithIdenity:(NSString *)identity appPath:(NSURL *)appPathURL outputPath:(NSURL *)outputPathURL;
