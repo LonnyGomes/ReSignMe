@@ -33,6 +33,7 @@
 #define kSecurityManagerBaseCdmCodeSign @"codesign"
 #define kSecurityManagerBaseCdmCodeSignAllocate @"codesign_allocate"
 #define kCmdDefaultPathXcodeSubDir @"/Contents/Developer/usr/bin/"
+#define kCmdDefaultPathXcode5SubDir @"/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/"
 
 #define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
 #define kSecurityManagerWorkingSubDir @"dump"
@@ -95,6 +96,13 @@ static SecurityManager *_certManager = nil;
         
         if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
             self.pathForCodesignAlloc = altPath;
+        } else {
+            //let's also try the Xcode 5 location as it has changed from Xcode 4
+            altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcode5SubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]];
+            
+            if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
+                self.pathForCodesignAlloc = altPath;
+            }
         }
     }
     
