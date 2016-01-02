@@ -260,7 +260,7 @@
 			name = ReSignMeTests;
 			productName = AppResignerTests;
 			productReference = 07FE86B516C7271A00AC4D31 /* ReSignMeTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -268,7 +268,8 @@
 		07FE868D16C7271A00AC4D31 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastTestingUpgradeCheck = 0720;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Carpe Lucem Media Group";
 			};
 			buildConfigurationList = 07FE869016C7271A00AC4D31 /* Build configuration list for PBXProject "AppResigner" */;
@@ -404,7 +405,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -414,6 +414,7 @@
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -437,7 +438,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
 				CLANG_CXX_LIBRARY = "libc++";
 				CLANG_ENABLE_OBJC_ARC = YES;
@@ -467,6 +467,7 @@
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ReSignMe;
 				WRAPPER_EXTENSION = app;
 			};
@@ -480,6 +481,7 @@
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResigner/AppResigner-Info.plist";
 				MACOSX_DEPLOYMENT_TARGET = 10.7;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = ReSignMe;
 				WRAPPER_EXTENSION = app;
 			};
@@ -497,6 +499,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
@@ -515,6 +518,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
 				INFOPLIST_FILE = "AppResignerTests/AppResignerTests-Info.plist";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = octest;
