@@ -38,7 +38,7 @@
 #define kAppDelMsgStrDepError @"Xcode and the 'Command line tools for Xcode' must be installed in order to use ReSignMe"
 #define kAppDelMsgStrXcodeDepError @"Xcode was not found on the system"
 #define kAppDelMsgStrCodesignDepError @"codesign was not found"
-#define kAppDelMsgStrCodesignAllocDepError @"codesign_alloc was not found! symlink to /usr/bin if it is installed"
+#define kAppDelMsgStrCodesignAllocDepError @"codesign_allocate was not found! symlink to /usr/bin if it is installed"
 
 
 @interface AppDelegate()

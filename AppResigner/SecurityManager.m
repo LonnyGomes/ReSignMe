@@ -25,7 +25,7 @@
 #import <Security/Security.h>
 
 #define kCmdDefaultPathCodeSign @"/usr/bin/codesign"
-#define kCmdDefaultPathCodeSignAlloc @"/usr/bin/codesign_alloc"
+#define kCmdDefaultPathCodeSignAlloc @"/usr/bin/codesign_allocate"
 #define kCmdZip @"/usr/bin/zip"
 #define kCmdUnzip @"/usr/bin/unzip"
 #define kCmdMkTemp @"/usr/bin/mktemp"
