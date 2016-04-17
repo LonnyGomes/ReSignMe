@@ -25,9 +25,9 @@
 #import "CertificateModel.h"
 #import <OCMock/OCMock.h>
 
-#import <SenTestingKit/SenTestingKit.h>
+#import <XCTest/XCTest.h>
 
-@interface AppResignerTests : SenTestCase
+@interface AppResignerTests : XCTestCase
 
 @end
 
@@ -54,9 +54,9 @@ AppDelegate *appDelegate;
 
 - (void)testApplicationDidFinishLaunching {
     [appDelegate applicationDidFinishLaunching:nil];
-    STAssertNotNil(appDelegate.sm, @"Security manager was not initialized");
-    STAssertNotNil(appDelegate.outputPathURL, @"The output path should be populated on initialization");
-    STAssertEqualObjects(appDelegate.dropView.delegate, appDelegate, @"The AppDropView has not beeen set!");
+    XCTAssertNotNil(appDelegate.sm, @"Security manager was not initialized");
+    XCTAssertNotNil(appDelegate.outputPathURL, @"The output path should be populated on initialization");
+    XCTAssertEqualObjects(appDelegate.dropView.delegate, appDelegate, @"The AppDropView has not beeen set!");
 }
 
 - (void)testPopulateCertIsCalledAtInit {
@@ -66,12 +66,12 @@ AppDelegate *appDelegate;
 }
 
 - (void)testAppShouldTerminate {
-    STAssertTrue([appDelegate applicationShouldTerminateAfterLastWindowClosed:nil], @"App should be set to terminate on last window close");
+    XCTAssertTrue([appDelegate applicationShouldTerminateAfterLastWindowClosed:nil], @"App should be set to terminate on last window close");
 }
 
 - (void)testLoadUserDefaults {
     //confirm fields are set
-    STAssertNotNil(appDelegate.outputPathURL, @"The output path was not set in user defaults.");
+    XCTAssertNotNil(appDelegate.outputPathURL, @"The output path was not set in user defaults.");
 }
 
 //- (void)testPopulateCertPopDown {
@@ -97,7 +97,7 @@ AppDelegate *appDelegate;
     
     NSString *myPath = [myPathURL path];
     NSString *returnedPath = appDelegate.pathTextField.stringValue;
-    STAssertEqualObjects(myPath, returnedPath, @"The path set with NSURL should equal the path in the text field!");
+    XCTAssertEqualObjects(myPath, returnedPath, @"The path set with NSURL should equal the path in the text field!");
 }
 
 @end
