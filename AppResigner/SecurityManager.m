@@ -409,13 +409,19 @@ static SecurityManager *_certManager = nil;
     //setup paths for codesign
     NSURL *appContentsURL = [payloadPathURL URLByAppendingPathComponent:[payloadPathContents objectAtIndex:0]];
     NSURL *resourcesPathURL = [appContentsURL URLByAppendingPathComponent:kSecurityManagerResourcesPlistDir];
+    BOOL resourcesPathExists = ([[NSFileManager defaultManager] fileExistsAtPath:[resourcesPathURL path]]);
     
-    NSArray *codesignArgs = @[ @"--force",
-                               @"--sign",
-                               identity,
-                               @"--resource-rules",
-                               [resourcesPathURL path],
-                               [appContentsURL path]];
+    //create argument list for the codesign command
+    NSMutableArray *codesignArgs =
+        [[NSMutableArray alloc] initWithArray: @[ @"--force", @"--sign", identity]];
+    
+    //check if resource path needs to be supplied
+    if (resourcesPathExists) {
+        [codesignArgs addObjectsFromArray:@[@"--resource-rules",[resourcesPathURL path]]];
+    }
+    
+    //add path to extracted app to the codesign command arguments
+    [codesignArgs addObject:[appContentsURL path]];
     
     //TODO:check into codesign_allocate
     //TODO:do we need to insert the mobile provisioning profile?
