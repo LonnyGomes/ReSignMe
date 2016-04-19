@@ -22,7 +22,6 @@
 		07FE86A916C7271A00AC4D31 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86A716C7271A00AC4D31 /* Credits.rtf */; };
 		07FE86AC16C7271A00AC4D31 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86AB16C7271A00AC4D31 /* AppDelegate.m */; };
 		07FE86AF16C7271A00AC4D31 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86AD16C7271A00AC4D31 /* MainMenu.xib */; };
-		07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */; };
 		07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 07FE869816C7271A00AC4D31 /* Cocoa.framework */; };
 		07FE86C016C7271A00AC4D31 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 07FE86BE16C7271A00AC4D31 /* InfoPlist.strings */; };
 		07FE86C316C7271A00AC4D31 /* AppResignerTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 07FE86C216C7271A00AC4D31 /* AppResignerTests.m */; };
@@ -70,8 +69,7 @@
 		07FE86AA16C7271A00AC4D31 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		07FE86AB16C7271A00AC4D31 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		07FE86AE16C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainMenu.xib; sourceTree = "<group>"; };
-		07FE86B516C7271A00AC4D31 /* ReSignMeTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReSignMeTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
-		07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
+		07FE86B516C7271A00AC4D31 /* ReSignMeTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ReSignMeTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		07FE86BD16C7271A00AC4D31 /* AppResignerTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "AppResignerTests-Info.plist"; sourceTree = "<group>"; };
 		07FE86BF16C7271A00AC4D31 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		07FE86C216C7271A00AC4D31 /* AppResignerTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppResignerTests.m; sourceTree = "<group>"; };
@@ -98,7 +96,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				07B0951416C7FF4900772E86 /* Security.framework in Frameworks */,
-				07FE86B716C7271A00AC4D31 /* SenTestingKit.framework in Frameworks */,
 				07FE86B816C7271A00AC4D31 /* Cocoa.framework in Frameworks */,
 				8A507B68177D34F800FE2515 /* OCMock.framework in Frameworks */,
 			);
@@ -141,7 +138,7 @@
 			isa = PBXGroup;
 			children = (
 				07FE869516C7271A00AC4D31 /* ReSignMe.app */,
-				07FE86B516C7271A00AC4D31 /* ReSignMeTests.octest */,
+				07FE86B516C7271A00AC4D31 /* ReSignMeTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,7 +149,6 @@
 				07E0CB9316C73FEA005E6C6A /* Security.framework */,
 				8A507B67177D34F800FE2515 /* OCMock.framework */,
 				07FE869816C7271A00AC4D31 /* Cocoa.framework */,
-				07FE86B616C7271A00AC4D31 /* SenTestingKit.framework */,
 				07FE869A16C7271A00AC4D31 /* Other Frameworks */,
 			);
 			name = Frameworks;
@@ -259,8 +255,8 @@
 			);
 			name = ReSignMeTests;
 			productName = AppResignerTests;
-			productReference = 07FE86B516C7271A00AC4D31 /* ReSignMeTests.octest */;
-			productType = "com.apple.product-type.bundle.ocunit-test";
+			productReference = 07FE86B516C7271A00AC4D31 /* ReSignMeTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -268,7 +264,7 @@
 		07FE868D16C7271A00AC4D31 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastTestingUpgradeCheck = 0720;
+				LastTestingUpgradeCheck = 0730;
 				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = "Carpe Lucem Media Group";
 			};
@@ -495,6 +491,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"\"$(SRCROOT)\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
@@ -502,7 +499,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Debug;
 		};
@@ -514,6 +510,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"\"$(DEVELOPER_LIBRARY_DIR)/Frameworks\"",
 					"\"$(SRCROOT)\"",
+					"$(inherited)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "AppResigner/AppResigner-Prefix.pch";
@@ -521,7 +518,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.carpelucem.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUNDLE_LOADER)";
-				WRAPPER_EXTENSION = octest;
 			};
 			name = Release;
 		};

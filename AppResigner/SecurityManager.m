@@ -34,6 +34,7 @@
 #define kSecurityManagerBaseCdmCodeSignAllocate @"codesign_allocate"
 #define kCmdDefaultPathXcodeSubDir @"/Contents/Developer/usr/bin/"
 #define kCmdDefaultPathXcode5SubDir @"/Contents/Developer/Platforms/iPhoneOS.platform/Developer/usr/bin/"
+#define kCmdDefaultPathXcode6SubDir @"/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/"
 
 #define kSecurityManagerTmpFileTemplate @"/tmp/app-resign-XXXXXXXXXXXXXXXX"
 #define kSecurityManagerWorkingSubDir @"dump"
@@ -74,36 +75,40 @@ static SecurityManager *_certManager = nil;
     NSString* xCodePath = [ [ NSWorkspace sharedWorkspace ]
                            absolutePathForAppBundleWithIdentifier: kSecurityManagerXcodeBundleName ];
     
-    //first check for codesign and codesign_alloc binaries
-    if ([[NSFileManager defaultManager] fileExistsAtPath:kCmdDefaultPathCodeSign]) {
-        self.pathForCodesign = kCmdDefaultPathCodeSign;
-    } else if (xCodePath) {
-        //if codesign isn't found in it's default location, check for xcode
-        NSString *altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSign]];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
-            self.pathForCodesign = altPath;
-        }
-    }
-
+    //potentail paths for codesign_alloc
+    NSArray *allocPaths = @[
+        //Xcode >=6 path
+        [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcode6SubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]],
+        //Xcode 5 path
+        [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcode5SubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]],
+        //Xcode 4 path
+        [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]],
+        //default path
+        kCmdDefaultPathCodeSignAlloc
+    ];
     
-    if ([[NSFileManager defaultManager] fileExistsAtPath:kCmdDefaultPathCodeSignAlloc]) {
-        self.pathForCodesignAlloc = kCmdDefaultPathCodeSignAlloc;
-    } else  if (xCodePath) {
-        //if not found at the default location but Xcode is installed
-        //lets get the path from there
-        NSString *altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]];
-        
-        if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
-            self.pathForCodesignAlloc = altPath;
+    if (xCodePath) {
+        //first check for codesign
+        if ([[NSFileManager defaultManager] fileExistsAtPath:kCmdDefaultPathCodeSign]) {
+            self.pathForCodesign = kCmdDefaultPathCodeSign;
         } else {
-            //let's also try the Xcode 5 location as it has changed from Xcode 4
-            altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcode5SubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSignAllocate]];
+            //if codesign isn't found in it's default location, check for xcode
+            NSString *altPath = [xCodePath stringByAppendingPathComponent:[kCmdDefaultPathXcodeSubDir stringByAppendingString:kSecurityManagerBaseCdmCodeSign]];
             
             if ([[NSFileManager defaultManager] fileExistsAtPath:altPath]) {
-                self.pathForCodesignAlloc = altPath;
+                self.pathForCodesign = altPath;
             }
         }
+
+        //check for codesign_alloc
+        for (NSString *curAllocPath in allocPaths) {
+            if ([[NSFileManager defaultManager] fileExistsAtPath:curAllocPath]) {
+                //found the binary at this location!
+                self.pathForCodesignAlloc = curAllocPath;
+                break;
+            }
+        }
+        
     }
     
     SecurityManagerError errorCodes = 0;
