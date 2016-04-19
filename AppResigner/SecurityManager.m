@@ -23,6 +23,7 @@
 #import "SecurityManager.h"
 #import "CertificateModel.h"
 #import <Security/Security.h>
+#import <objc/message.h>
 
 #define kCmdDefaultPathCodeSign @"/usr/bin/codesign"
 #define kCmdDefaultPathCodeSignAlloc @"/usr/bin/codesign_allocate"
@@ -126,6 +127,42 @@ static SecurityManager *_certManager = nil;
     }
     
     return errorCodes;
+}
+
+//check if resource rules flag for codesign command are needed
+//the flag was deprecated on OS X 10.10
+- (BOOL) resourceRulesIsDeprecated {
+    BOOL isDeprecated;
+    //derived from http://stackoverflow.com/a/25265655 and http://tinyurl.com/zxw5wjj
+
+    //init struct and function pointers to be backwards compatible
+    //with older SDKs that don't have operatatingSystemVersion selector
+    typedef struct {
+        NSInteger majorVersion;
+        NSInteger minorVersion;
+        NSInteger patchVersion;
+    } OSVersion;
+
+    //create function pointer to objc_msgSend_stret to avoid calling directly
+    OSVersion (*sendOSVersionFn)(id receiver, SEL operation);
+    sendOSVersionFn = (OSVersion(*)(id, SEL))objc_msgSend_stret;
+    
+    if ([[NSProcessInfo processInfo] respondsToSelector:@selector(operatingSystemVersion)]) {
+        OSVersion version = sendOSVersionFn([NSProcessInfo processInfo], @selector(operatingSystemVersion));
+
+        //we are running OS X >= 10.10.x, resource rules are deprecated
+        if (version.majorVersion == 10 && version.minorVersion >= 10) {
+            isDeprecated = YES;
+        } else {
+            isDeprecated = NO;
+        }
+    } else {
+        //if the selector doesn't exist, were are running <= OS X 10.9
+        //and resources rules are not deprecated
+        isDeprecated = NO;
+    }
+
+    return isDeprecated;
 }
 
 - (NSArray *)getDistributionAndDevCertificatesList {
@@ -409,13 +446,19 @@ static SecurityManager *_certManager = nil;
     //setup paths for codesign
     NSURL *appContentsURL = [payloadPathURL URLByAppendingPathComponent:[payloadPathContents objectAtIndex:0]];
     NSURL *resourcesPathURL = [appContentsURL URLByAppendingPathComponent:kSecurityManagerResourcesPlistDir];
+    BOOL resourcesPathExists = ([[NSFileManager defaultManager] fileExistsAtPath:[resourcesPathURL path]]);
     
-    NSArray *codesignArgs = @[ @"--force",
-                               @"--sign",
-                               identity,
-                               @"--resource-rules",
-                               [resourcesPathURL path],
-                               [appContentsURL path]];
+    //create argument list for the codesign command
+    NSMutableArray *codesignArgs =
+        [[NSMutableArray alloc] initWithArray: @[ @"--force", @"--sign", identity]];
+    
+    //check if resource path needs to be supplied
+    if (resourcesPathExists && ![self resourceRulesIsDeprecated]) {
+        [codesignArgs addObjectsFromArray:@[@"--resource-rules",[resourcesPathURL path]]];
+    }
+    
+    //add path to extracted app to the codesign command arguments
+    [codesignArgs addObject:[appContentsURL path]];
     
     //TODO:check into codesign_allocate
     //TODO:do we need to insert the mobile provisioning profile?
