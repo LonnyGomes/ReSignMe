@@ -6,7 +6,7 @@ ReSignMe is an OS X app that simplifies the process of re-signing an iOS app dow
 ![ReSignMe Screen Shot](http://lonnygomes.github.io/screenshots/screenShot1_ReSignMe.png "ReSignMe App")
 
 ## Links ##
-  * Download the latest version  of ReSignMe [here](https://github.com/LonnyGomes/ReSignMe/releases/download/v0.71/ReSignMe-0.71.dmg)
+  * Download the latest version  of ReSignMe [here](https://github.com/LonnyGomes/ReSignMe/releases/download/v0.72/ReSignMe-0.72.dmg)
   * There is basic [documentation](http://github.com/LonnyGomes/ReSignMe/wiki/Documentation) for instructions on using the app and all of it's options.
 
 ## Use Cases ##
